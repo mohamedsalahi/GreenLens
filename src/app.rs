@@ -563,6 +563,11 @@ impl eframe::App for GreenLensApp {
         self.poll_worker();
         self.poll_dialog(&ctx);
         self.check_timeout(&ctx);
+        if matches!(self.worker_state, WorkerState::Starting) {
+            // The first paint happens before the worker is up; without this
+            // the window sits on the loading frame until the next input event.
+            ctx.request_repaint_after(Duration::from_millis(100));
+        }
         self.header(ui);
         self.status_bar(ui);
         egui::CentralPanel::default()
