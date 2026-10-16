@@ -39,7 +39,6 @@
             cargo
             clippy
             rustfmt
-            rust-analyzer
             stdenv.cc
           ]) ++ sharedTools ++ guiLibs;
 
