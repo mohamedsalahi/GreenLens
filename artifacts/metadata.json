@@ -1,0 +1,65 @@
+{
+ "created": "2026-10-16T23:01:34.622834+00:00",
+ "backbone": "VGG16 (ImageNet weights, include_top=False)",
+ "weights_source": "keras.applications.VGG16 weights='imagenet'",
+ "input_size": [
+  224,
+  224
+ ],
+ "color_order": "RGB input, converted to BGR by preprocess_input",
+ "preprocessing": "PIL resize (bilinear) to 224x224, then keras.applications.vgg16.preprocess_input",
+ "preprocessing_module": "ml/preprocess.py",
+ "classes": [
+  "Pepper__bell___Bacterial_spot",
+  "Pepper__bell___healthy",
+  "Potato___Early_blight",
+  "Potato___Late_blight",
+  "Potato___healthy",
+  "Tomato_Bacterial_spot",
+  "Tomato_Early_blight",
+  "Tomato_Late_blight",
+  "Tomato_Leaf_Mold",
+  "Tomato_Septoria_leaf_spot",
+  "Tomato_Spider_mites_Two_spotted_spider_mite",
+  "Tomato__Target_Spot",
+  "Tomato__Tomato_YellowLeaf__Curl_Virus",
+  "Tomato__Tomato_mosaic_virus",
+  "Tomato_healthy"
+ ],
+ "num_classes": 15,
+ "dataset": {
+  "manifest": "data/processed/manifest.json",
+  "train": 14434,
+  "val": 3095,
+  "test": 3095,
+  "seed": 42
+ },
+ "training": {
+  "phase1": {
+   "frozen": "entire VGG16 backbone",
+   "epochs_ran": 10,
+   "optimizer": "Adam 0.001"
+  },
+  "phase2": {
+   "unfrozen": "VGG16 block5",
+   "epochs_ran": 6,
+   "optimizer": "Adam 1e-05"
+  },
+  "batch_size": 32,
+  "class_weights": "balanced",
+  "precision": "mixed_float16",
+  "augmentation": "horizontal flip, rotation 0.05, zoom 0.1 (training only)"
+ },
+ "test_metrics": {
+  "accuracy": 0.9547657512116317,
+  "macro_f1": 0.9495327847293087,
+  "weighted_f1": 0.9551719004745796
+ },
+ "environment": {
+  "tensorflow": "2.21.0",
+  "python": "3.12.15",
+  "gpus": [
+   "/physical_device:GPU:0"
+  ]
+ }
+}
