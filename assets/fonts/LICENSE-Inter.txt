@@ -1,0 +1,8 @@
+Inter font (InterVariable.ttf)
+Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+The full license text is available at:
+https://openfontlicense.org/open-font-license-official-text/
+
+The font is redistributed here unmodified.
