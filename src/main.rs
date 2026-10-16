@@ -1,5 +1,4 @@
-mod app;
-mod worker;
+use greenlens::app::GreenLensApp;
 
 fn main() -> eframe::Result {
     let options = eframe::NativeOptions {
@@ -12,6 +11,6 @@ fn main() -> eframe::Result {
     eframe::run_native(
         "GreenLens",
         options,
-        Box::new(|cc| Ok(Box::new(app::GreenLensApp::new(cc)))),
+        Box::new(|cc| Ok(Box::new(GreenLensApp::new(cc)))),
     )
 }
