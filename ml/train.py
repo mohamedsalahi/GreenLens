@@ -89,9 +89,9 @@ def build_model(num_classes: int, dense_units: int, dropout: float) -> tf.keras.
 def class_weights_from(entries: list[dict], class_to_index: dict[str, int]) -> dict[int, float]:
     counts = Counter(class_to_index[e["class"]] for e in entries)
     total = sum(counts.values())
-    n_classes = len(class_to_index)
+    present = len(counts)
     return {
-        idx: total / (n_classes * counts[idx]) for idx in range(n_classes)
+        idx: total / (present * count) for idx, count in sorted(counts.items())
     }
 
 
