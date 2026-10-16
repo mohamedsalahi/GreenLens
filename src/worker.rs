@@ -12,6 +12,7 @@ use std::sync::mpsc::{self, Receiver, Sender, TryRecvError};
 use std::thread;
 use std::time::Duration;
 
+use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -68,7 +69,7 @@ pub enum WorkerEvent {
 #[derive(Debug)]
 enum WireMessage {
     Ready(WorkerInfo),
-    Pong { id: Option<u64> },
+    Pong,
     Result {
         id: u64,
         path: String,
@@ -83,6 +84,10 @@ enum WireMessage {
     Bye,
 }
 
+fn decode<T: DeserializeOwned>(value: &serde_json::Value, target: &str) -> Result<T, String> {
+    serde_json::from_value(value.clone()).map_err(|e| format!("bad {target} message: {e}"))
+}
+
 fn parse_line(line: &str) -> Result<WireMessage, String> {
     let value: serde_json::Value =
         serde_json::from_str(line).map_err(|e| format!("not valid JSON: {e}"))?;
@@ -90,13 +95,10 @@ fn parse_line(line: &str) -> Result<WireMessage, String> {
         .get("type")
         .and_then(|v| v.as_str())
         .ok_or_else(|| "message has no type".to_string())?;
-    let decode = |target: &str| {
-        serde_json::from_value(value.clone()).map_err(|e| format!("bad {target} message: {e}"))
-    };
     match kind {
-        "ready" => decode("ready").map(WireMessage::Ready),
-        "pong" => decode("pong").map(|m: PongMessage| WireMessage::Pong { id: m.id }),
-        "result" => decode("result").map(
+        "ready" => decode(&value, "ready").map(WireMessage::Ready),
+        "pong" => Ok(WireMessage::Pong),
+        "result" => decode(&value, "result").map(
             |m: ResultMessage| WireMessage::Result {
                 id: m.id,
                 path: m.path,
@@ -104,7 +106,7 @@ fn parse_line(line: &str) -> Result<WireMessage, String> {
                 predictions: m.predictions,
             },
         ),
-        "error" => decode("error").map(|m: ErrorMessage| WireMessage::Error {
+        "error" => decode(&value, "error").map(|m: ErrorMessage| WireMessage::Error {
             id: m.id,
             code: m.code,
             message: m.message,
@@ -112,12 +114,6 @@ fn parse_line(line: &str) -> Result<WireMessage, String> {
         "bye" => Ok(WireMessage::Bye),
         other => Err(format!("unknown message type {other:?}")),
     }
-}
-
-#[derive(Deserialize)]
-struct PongMessage {
-    #[serde(default)]
-    id: Option<u64>,
 }
 
 #[derive(Deserialize)]
@@ -249,7 +245,7 @@ fn spawn_stdout_reader(stdout: std::process::ChildStdout, tx: Sender<WorkerEvent
             }
             let event = match parse_line(&line) {
                 Ok(WireMessage::Ready(info)) => WorkerEvent::Ready(info),
-                Ok(WireMessage::Pong { .. }) => continue,
+                Ok(WireMessage::Pong) => continue,
                 Ok(WireMessage::Result {
                     id,
                     path,
