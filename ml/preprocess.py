@@ -49,5 +49,11 @@ def preprocess_array(image: np.ndarray) -> np.ndarray:
 
 
 def preprocess_path(path: PathLike) -> np.ndarray:
-    """Full pipeline for one image file: float32 array ready for the model."""
+    """Full pipeline for one image file: float32 array ready for the model.
+
+    Accepts bytes as well as str/Path because tf.data passes python
+    strings to numpy_function as bytes.
+    """
+    if isinstance(path, bytes):
+        path = path.decode()
     return preprocess_array(load_image(path))
