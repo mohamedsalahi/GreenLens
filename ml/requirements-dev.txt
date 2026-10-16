@@ -1,0 +1,4 @@
+# Extra packages for running the ml test suite.
+# Install with: uv pip install -r ml/requirements-dev.txt
+-r requirements.txt
+pytest==9.1.1
