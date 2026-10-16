@@ -1,0 +1,7 @@
+# Python environment for dataset preparation, training and inference.
+# Install with: nix develop .#ml -c 'uv venv -p 3.12 && uv pip install -r ml/requirements.txt'
+tensorflow[and-cuda]==2.21.0
+pillow==11.3.0
+numpy==2.1.4
+scikit-learn==1.7.2
+matplotlib==3.10.7

@@ -1,0 +1,32 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+
+# Environment
+.direnv/
+.envrc.local
+
+# Local agent/tooling configuration
+.opencode/
+
+# Datasets (downloaded, never committed)
+data/raw/
+data/processed/
+data/*.zip
+
+# Model checkpoints kept out of Git; the exported final model in
+# artifacts/ is committed separately (see README).
+artifacts/checkpoints/
+artifacts/*.log
+artifacts/tensorboard/
+
+# Rust
+target/
+
+# Editor / OS
+*.swp
+.DS_Store
+/nix-result
