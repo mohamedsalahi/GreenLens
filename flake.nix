@@ -33,7 +33,9 @@
       # The CUDA pip wheels (nvidia-cublas, nvidia-cudnn, ...) drop their
       # shared libraries under the virtualenv. TensorFlow dlopens them at
       # import time, so put them on the loader path once the venv exists.
-      venvCudaHook = ''
+      # The uv-managed python also needs to be told where the system
+      # certificates live before it can reach hugging face style hosts.
+      devHook = ''
         _nv="$PWD/.venv/lib/python3.12/site-packages/nvidia"
         if [ -d "$_nv" ]; then
           for _d in "$_nv"/*/lib; do
@@ -42,6 +44,8 @@
           export LD_LIBRARY_PATH
         fi
         unset _nv _d
+
+        export SSL_CERT_FILE="${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
       '';
     in
     {
@@ -57,7 +61,7 @@
           ]) ++ sharedTools ++ guiLibs;
 
           LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath guiLibs + ":/run/opengl-driver/lib";
-          shellHook = venvCudaHook;
+          shellHook = devHook;
         };
 
         # Python/ML shell. The NVIDIA driver runtime (libcuda.so.1) lives in
@@ -66,7 +70,7 @@
           name = "greenlens-ml";
           packages = sharedTools ++ (with pkgs; [ imagemagick ]);
           LD_LIBRARY_PATH = "/run/opengl-driver/lib";
-          shellHook = venvCudaHook;
+          shellHook = devHook;
         };
       };
     };
