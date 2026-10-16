@@ -1,6 +1,9 @@
+use std::path::PathBuf;
+
 use greenlens::app::GreenLensApp;
 
 fn main() -> eframe::Result {
+    let image = std::env::args_os().nth(1).map(PathBuf::from);
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_title("GreenLens")
@@ -11,6 +14,6 @@ fn main() -> eframe::Result {
     eframe::run_native(
         "GreenLens",
         options,
-        Box::new(|cc| Ok(Box::new(GreenLensApp::new(cc)))),
+        Box::new(move |cc| Ok(Box::new(GreenLensApp::new(cc, image)))),
     )
 }

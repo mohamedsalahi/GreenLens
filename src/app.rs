@@ -62,11 +62,12 @@ pub struct GreenLensApp {
     analysis: Analysis,
     dialog_open: bool,
     dialog_rx: Option<Receiver<Option<PathBuf>>>,
+    pending_image: Option<PathBuf>,
     status: String,
 }
 
 impl GreenLensApp {
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(cc: &eframe::CreationContext<'_>, image: Option<PathBuf>) -> Self {
         apply_style(&cc.egui_ctx);
         let (worker, worker_state, status) = match start_worker() {
             Ok(worker) => (
@@ -88,6 +89,7 @@ impl GreenLensApp {
             analysis: Analysis::Idle,
             dialog_open: false,
             dialog_rx: None,
+            pending_image: image,
             status,
         }
     }
@@ -562,6 +564,11 @@ impl eframe::App for GreenLensApp {
         let ctx = ui.ctx().clone();
         self.poll_worker();
         self.poll_dialog(&ctx);
+        if matches!(self.worker_state, WorkerState::Ready(_)) {
+            if let Some(path) = self.pending_image.take() {
+                self.load_selected(&ctx, path);
+            }
+        }
         self.check_timeout(&ctx);
         if matches!(self.worker_state, WorkerState::Starting) {
             // The first paint happens before the worker is up; without this
