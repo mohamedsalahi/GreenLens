@@ -6,8 +6,101 @@ leaf images. A convolutional classifier built from a VGG16 backbone (TensorFlow
 a Rust desktop front end built with egui opens an image, sends it to the
 worker, and displays the ranked class predictions with their probabilities.
 
-Supported crops and classes depend on the dataset subset the shipped model was
-trained on. See `docs/` and the "Model" section below for the exact class list
-and honest evaluation numbers.
+![GreenLens classifying a potato leaf as late blight](assets/screenshot.png)
 
-Status: work in progress. The README is updated as milestones complete.
+## How it works
+
+- The window is a native egui/eframe application (OpenGL), there is no browser
+  and no web server involved.
+- The model lives in a separate long-lived Python process that speaks a small
+  JSON-lines protocol over stdin/stdout. Loading the model and running
+  inference never block the UI thread, and a crashed or misbehaving worker is
+  reported in the window instead of taking the app down.
+- Results are shown as a confidence gauge plus ranked candidates, together
+  with the inference time and the live worker state (loading, ready, failed).
+- An image can be picked with the "Open image" button or handed to the app
+  directly on the command line: `greenlens path/to/leaf.jpg`.
+
+## Model
+
+- Backbone: VGG16 with ImageNet weights, `include_top=False`. On top sit a
+  global average pooling layer and a small head (dense 256, dropout 0.3,
+  L2 1e-4, softmax over the classes).
+- Training is two-staged: first the head is trained with the whole backbone
+  frozen (10 epochs, Adam 1e-3), then `block5` is unfrozen and fine-tuned at a
+  low learning rate (6 epochs, Adam 1e-5). Batch size 32, balanced class
+  weights, `mixed_float16`, and light augmentation (horizontal flip, small
+  rotation and zoom) during training only.
+- Data: 15 crop disease classes from the PlantVillage dataset, 20,624 images
+  after dropping exact duplicates. A stratified 70/15/15 split (seed 42) is
+  recorded in `data/processed/manifest.json`.
+- Held-out test split (3,095 images): **95.5% accuracy, macro F1 0.95**.
+  Per-class precision/recall and the confusion matrix are in
+  `artifacts/test_report.json` and `artifacts/confusion_matrix.png`.
+
+Classes, grouped by crop: Pepper bell (bacterial spot, healthy); Potato (early
+blight, late blight, healthy); Tomato (bacterial spot, early blight, late
+blight, leaf mold, Septoria leaf spot, spider mites, target spot, yellow leaf
+curl virus, mosaic virus, healthy).
+
+### Artifacts
+
+The trained model is committed so the app runs without retraining:
+
+- `model.keras` - the best checkpoint, repacked without the optimizer state
+- `class_names.json` - the class order behind the softmax output
+- `metadata.json` - training configuration, dataset split sizes, environment
+- `test_report.json`, `confusion_matrix.png` - evaluation on the held-out split
+- `train_log_phase1.csv`, `train_log_phase2.csv` - per-epoch history
+
+## Building and running
+
+The repository ships Nix flake dev shells with everything needed (Rust,
+Python, GUI and CUDA libraries). From the project root:
+
+```sh
+nix develop .
+cargo run --release -- path/to/leaf.jpg
+```
+
+Without the argument the app starts with an empty preview and waits for the
+"Open image" button. The app expects the Python environment at `.venv/bin/python`
+and the worker script and model relative to the project root; `GREENLENS_PYTHON`
+and `GREENLENS_HOME` can override both paths.
+
+## Reproducing the model
+
+The PlantVillage images are not part of the repository; download the dataset
+and point the preparation script at the folder that contains the class
+directories:
+
+```sh
+nix develop .#ml -c 'uv venv -p 3.12 && uv pip install -r ml/requirements.txt'
+nix develop . -c .venv/bin/python ml/prepare_data.py --raw data/raw/plantvillage/PlantVillage --out data/processed
+nix develop . -c .venv/bin/python ml/train.py --manifest data/processed/manifest.json --artifacts artifacts
+```
+
+Training uses the GPU when one is available and falls back to the CPU. The
+first run downloads the ImageNet weights for VGG16 into the Keras cache.
+
+## Tests
+
+```sh
+nix develop . -c cargo test
+nix develop . -c .venv/bin/python -m pytest ml/tests
+```
+
+The Rust side covers protocol parsing plus integration tests that drive the
+real worker and model (they skip when `artifacts/model.keras` is missing). The
+Python side covers the image pipeline, duplicate detection, manifest splitting
+and the worker protocol.
+
+## Layout
+
+- `src/` - the desktop app (`app.rs`), the worker subprocess bridge
+  (`worker.rs`) and the entry point (`main.rs`)
+- `ml/` - dataset preparation, shared preprocessing, training, the inference
+  worker and its tests
+- `artifacts/` - trained model and evaluation reports
+- `data/` - raw and processed datasets (not committed)
+- `assets/` - bundled fonts and the README screenshot
