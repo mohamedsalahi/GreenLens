@@ -9,7 +9,7 @@ Two-stage transfer learning on the manifest produced by prepare_data.py:
 The best checkpoint by validation accuracy is kept, then evaluated once
 on the held-out test split. Artifacts written to --artifacts:
 
-  model.keras           best checkpoint
+  model.keras           best weights, repacked without the optimizer state
   class_names.json      index to class mapping
   metadata.json         everything needed to reproduce inference
   train_log_phase*.csv  per-epoch history
@@ -275,6 +275,13 @@ def main() -> int:
     test_result = evaluate(best, ds_test, test_entries, classes, args.artifacts)
     print(f"test accuracy: {test_result['test_accuracy']:.4f}")
     print(f"macro F1:      {test_result['macro_f1']:.4f}")
+
+    # The checkpoint keeps the optimizer state so a run can be resumed, but
+    # that more than doubles the file size. Inference only needs the weights,
+    # so repack them into a fresh uncompiled model and drop the optimizer.
+    compact = build_model(len(classes), args.dense_units, args.dropout)
+    compact.set_weights(best.get_weights())
+    compact.save(checkpoint_path)
 
     index_map = {str(i): c for i, c in enumerate(classes)}
     (args.artifacts / "class_names.json").write_text(
