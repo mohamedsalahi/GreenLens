@@ -36,9 +36,9 @@ def test_stratified_split_is_reproducible():
 
 def test_prepare_end_to_end(tmp_path, monkeypatch, capsys):
     raw = tmp_path / "raw"
-    for cls in ("Alpha", "Beta"):
+    for cls, tint in (("Alpha", 0), ("Beta", 60)):
         for i in range(6):
-            make_image(raw / cls / f"{i}.png", color=(i * 30, 100, 50))
+            make_image(raw / cls / f"{i}.png", color=(i * 30, 100 + tint, 50))
     # One byte-identical duplicate and one unreadable file.
     shutil.copyfile(raw / "Alpha/0.png", raw / "Alpha/copy-of-0.png")
     (raw / "Beta/broken.png").write_bytes(b"this is not an image")
@@ -54,7 +54,7 @@ def test_prepare_end_to_end(tmp_path, monkeypatch, capsys):
     inventory = json.loads((out / "inventory.json").read_text())
 
     assert manifest["classes"] == ["Alpha", "Beta"]
-    assert inventory["total_images"] == 11
+    assert inventory["total_images"] == 12
     assert len(inventory["duplicates_dropped"]) == 1
     assert len(inventory["corrupt_files"]) == 1
 
@@ -63,6 +63,6 @@ def test_prepare_end_to_end(tmp_path, monkeypatch, capsys):
         for split in manifest["splits"].values()
         for entry in split
     ]
-    assert len(everything) == len(set(everything)) == 11
+    assert len(everything) == len(set(everything)) == 12
     for split in ("train", "val", "test"):
         assert manifest["splits"][split], f"{split} split is empty"
