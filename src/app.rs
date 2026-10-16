@@ -246,8 +246,8 @@ impl GreenLensApp {
         }
     }
 
-    fn header(&mut self, ctx: &egui::Context) {
-        egui::TopBottomPanel::top("header").show(ctx, |ui| {
+    fn header(&mut self, ui: &mut egui::Ui) {
+        egui::Panel::top("header").show(ui, |ui| {
             ui.add_space(8.0);
             ui.horizontal(|ui| {
                 ui.label(
@@ -277,8 +277,8 @@ impl GreenLensApp {
         });
     }
 
-    fn status_bar(&mut self, ctx: &egui::Context) {
-        egui::TopBottomPanel::bottom("status").show(ctx, |ui| {
+    fn status_bar(&mut self, ui: &mut egui::Ui) {
+        egui::Panel::bottom("status").show(ui, |ui| {
             ui.add_space(3.0);
             ui.horizontal(|ui| {
                 ui.label(RichText::new(&self.status).small().color(GRAY));
@@ -417,13 +417,14 @@ impl GreenLensApp {
 }
 
 impl eframe::App for GreenLensApp {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        let ctx = ui.ctx().clone();
         self.poll_worker();
-        self.poll_dialog(ctx);
-        self.check_timeout(ctx);
-        self.header(ctx);
-        self.status_bar(ctx);
-        egui::CentralPanel::default().show(ctx, |ui| {
+        self.poll_dialog(&ctx);
+        self.check_timeout(&ctx);
+        self.header(ui);
+        self.status_bar(ui);
+        egui::CentralPanel::default().show(ui, |ui| {
             ui.add_space(8.0);
             ui.columns(2, |columns| {
                 self.image_column(&mut columns[0]);
@@ -477,10 +478,10 @@ fn apply_style(ctx: &egui::Context) {
     visuals.selection.bg_fill = GREEN;
     visuals.hyperlink_color = GREEN_BRIGHT;
     ctx.set_visuals(visuals);
-    let mut style = (*ctx.style()).clone();
-    style.spacing.item_spacing = egui::vec2(8.0, 6.0);
-    style.spacing.button_padding = egui::vec2(10.0, 5.0);
-    ctx.set_style(style);
+    ctx.all_styles_mut(|style| {
+        style.spacing.item_spacing = egui::vec2(8.0, 6.0);
+        style.spacing.button_padding = egui::vec2(10.0, 5.0);
+    });
 }
 
 fn start_worker() -> std::io::Result<Worker> {
