@@ -81,7 +81,7 @@ impl GreenLensApp {
 
     fn poll_worker(&mut self) {
         let mut events = Vec::new();
-        if let Some(worker) = &self.worker {
+        if let Some(worker) = &mut self.worker {
             while let Some(event) = worker.poll() {
                 events.push(event);
             }

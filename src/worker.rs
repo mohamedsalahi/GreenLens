@@ -138,6 +138,7 @@ pub struct Worker {
     stdin: Option<ChildStdin>,
     events: Receiver<WorkerEvent>,
     next_id: u64,
+    exited_reported: bool,
 }
 
 impl Worker {
@@ -177,6 +178,7 @@ impl Worker {
             stdin: Some(stdin),
             events: rx,
             next_id: 1,
+            exited_reported: false,
         })
     }
 
@@ -200,12 +202,20 @@ impl Worker {
         stdin.flush()
     }
 
-    /// Next event, if any, without blocking.
-    pub fn poll(&self) -> Option<WorkerEvent> {
+    /// Next event, if any, without blocking. A disconnected channel means the
+    /// reader thread is gone, which is reported as `Exited` exactly once.
+    pub fn poll(&mut self) -> Option<WorkerEvent> {
         match self.events.try_recv() {
             Ok(event) => Some(event),
             Err(TryRecvError::Empty) => None,
-            Err(TryRecvError::Disconnected) => Some(WorkerEvent::Exited),
+            Err(TryRecvError::Disconnected) => {
+                if self.exited_reported {
+                    None
+                } else {
+                    self.exited_reported = true;
+                    Some(WorkerEvent::Exited)
+                }
+            }
         }
     }
 
@@ -325,5 +335,21 @@ mod tests {
         assert!(parse_line("not json").is_err());
         assert!(parse_line(r#"{"no":"type"}"#).is_err());
         assert!(parse_line(r#"{"type":"whatever"}"#).is_err());
+    }
+
+    #[test]
+    fn poll_reports_a_dead_worker_only_once() {
+        let (tx, rx) = mpsc::channel();
+        drop(tx);
+        let mut worker = Worker {
+            child: None,
+            stdin: None,
+            events: rx,
+            next_id: 1,
+            exited_reported: false,
+        };
+        assert!(matches!(worker.poll(), Some(WorkerEvent::Exited)));
+        assert!(worker.poll().is_none());
+        assert!(worker.poll().is_none());
     }
 }

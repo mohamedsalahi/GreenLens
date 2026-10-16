@@ -38,7 +38,10 @@ fn first_dataset_image() -> Option<PathBuf> {
     walk(&project_root().join("data/raw/plantvillage"))
 }
 
-fn wait_for_event(worker: &Worker, mut predicate: impl FnMut(&WorkerEvent) -> bool) -> Option<WorkerEvent> {
+fn wait_for_event(
+    worker: &mut Worker,
+    mut predicate: impl FnMut(&WorkerEvent) -> bool,
+) -> Option<WorkerEvent> {
     let deadline = Instant::now() + Duration::from_secs(240);
     while Instant::now() < deadline {
         if let Some(event) = worker.poll() {
@@ -72,7 +75,7 @@ fn worker_handshake_and_prediction() {
         return;
     };
 
-    let ready = wait_for_event(&worker, |event| {
+    let ready = wait_for_event(&mut worker, |event| {
         matches!(event, WorkerEvent::Ready(_))
     });
     let Some(WorkerEvent::Ready(info)) = ready else {
@@ -88,7 +91,7 @@ fn worker_handshake_and_prediction() {
     };
 
     let id = worker.send_predict(&image).expect("request should send");
-    let event = wait_for_event(&worker, |event| {
+    let event = wait_for_event(&mut worker, |event| {
         matches!(event, WorkerEvent::Predictions { id: event_id, .. } if *event_id == id)
     });
     let Some(WorkerEvent::Predictions { predictions, .. }) = event else {
@@ -123,7 +126,7 @@ fn worker_reports_missing_file_as_structured_error() {
         return;
     };
     let ready = wait_for_event(
-        &worker,
+        &mut worker,
         |event| matches!(event, WorkerEvent::Ready(_) | WorkerEvent::Error { .. }),
     );
     assert!(
@@ -133,7 +136,7 @@ fn worker_reports_missing_file_as_structured_error() {
 
     let missing = project_root().join("data/does-not-exist-42.jpg");
     let id = worker.send_predict(&missing).expect("request should send");
-    let event = wait_for_event(&worker, |event| {
+    let event = wait_for_event(&mut worker, |event| {
         matches!(event, WorkerEvent::Error { id: Some(event_id), .. } if *event_id == id)
     });
     let Some(WorkerEvent::Error { code, .. }) = event else {
