@@ -23,7 +23,12 @@ unknown_type, startup_failed.
 
 Usage:
   python ml/inference_worker.py --model artifacts/model.keras \
-      --classes artifacts/class_names.json --metadata artifacts/metadata.json
+      --classes artifacts/class_names.json --metadata artifacts/metadata.json \
+      --diseases artifacts/diseases.db
+
+Each prediction in the result also carries a "disease" object with guidance
+(description, symptoms, spread, management steps, treatment options and cited
+sources) looked up in the SQLite database by the predicted class id.
 """
 
 from __future__ import annotations
@@ -32,6 +37,7 @@ import argparse
 import json
 import logging
 import os
+import sqlite3
 import sys
 from pathlib import Path
 from typing import Any
@@ -40,6 +46,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_MODEL = REPO_ROOT / "artifacts" / "model.keras"
 DEFAULT_CLASSES = REPO_ROOT / "artifacts" / "class_names.json"
 DEFAULT_METADATA = REPO_ROOT / "artifacts" / "metadata.json"
+DEFAULT_DISEASES = REPO_ROOT / "artifacts" / "diseases.db"
 
 log = logging.getLogger("greenlens.worker")
 
@@ -64,10 +71,73 @@ def human_label(class_id: str) -> str:
     return f"{crop}: {' '.join(disease)}" if disease else crop
 
 
+class Advisory:
+    """Read-only lookups of disease guidance from the SQLite reference database.
+
+    The database is keyed by the same class ids the model predicts
+    (`artifacts/class_names.json`), so a prediction resolves to its guidance
+    with a single lookup.
+    """
+
+    def __init__(self, db_path: Path):
+        self.db_path = db_path
+        self._connection: sqlite3.Connection | None = None
+        if db_path.is_file():
+            self._connection = sqlite3.connect(
+                f"file:{db_path}?mode=ro", uri=True
+            )
+            self._connection.row_factory = sqlite3.Row
+
+    @property
+    def available(self) -> bool:
+        return self._connection is not None
+
+    def for_class(self, class_id: str) -> dict[str, Any] | None:
+        if self._connection is None:
+            return None
+        row = self._connection.execute(
+            "SELECT * FROM diseases WHERE class_id = ?", (class_id,)
+        ).fetchone()
+        if row is None:
+            return None
+        steps: dict[str, list[str]] = {"management": [], "treatment": []}
+        for step in self._connection.execute(
+            "SELECT section, step FROM steps WHERE class_id = ? ORDER BY section, position",
+            (class_id,),
+        ):
+            steps[step["section"]].append(step["step"])
+        sources = [
+            {"title": source["title"], "publisher": source["publisher"], "url": source["url"]}
+            for source in self._connection.execute(
+                "SELECT title, publisher, url FROM sources WHERE class_id = ? ORDER BY position",
+                (class_id,),
+            )
+        ]
+        return {
+            "name": row["name"],
+            "pathogen": row["pathogen"],
+            "healthy": bool(row["healthy"]),
+            "feedback": row["feedback"],
+            "about": row["about"],
+            "symptoms": row["symptoms"],
+            "spread": row["spread"],
+            "egypt": row["egypt"],
+            "management": steps["management"],
+            "treatment": steps["treatment"],
+            "sources": sources,
+        }
+
+
 class Engine:
     """Loads the model and metadata once, predicts many times."""
 
-    def __init__(self, model_path: Path, classes_path: Path, metadata_path: Path):
+    def __init__(
+        self,
+        model_path: Path,
+        classes_path: Path,
+        metadata_path: Path,
+        diseases_path: Path,
+    ):
         os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
         import tensorflow as tf
 
@@ -94,6 +164,16 @@ class Engine:
             raise ValueError(
                 f"metadata records input size {list(recorded_size)} but the "
                 f"preprocessing pipeline uses {list(IMAGE_SIZE)}"
+            )
+
+        self.advisory = Advisory(diseases_path)
+        if self.advisory.available:
+            log.info("disease guidance database: %s", diseases_path)
+        else:
+            log.warning(
+                "no disease guidance database at %s; "
+                "predictions will not carry guidance",
+                diseases_path,
             )
 
         for gpu in tf.config.list_physical_devices("GPU"):
@@ -141,6 +221,7 @@ class Engine:
                 "class": self.classes[int(i)],
                 "label": human_label(self.classes[int(i)]),
                 "probability": float(probs[int(i)]),
+                "disease": self.advisory.for_class(self.classes[int(i)]),
             }
             for i in order
         ]
@@ -224,6 +305,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--model", type=Path, default=DEFAULT_MODEL)
     parser.add_argument("--classes", type=Path, default=DEFAULT_CLASSES)
     parser.add_argument("--metadata", type=Path, default=DEFAULT_METADATA)
+    parser.add_argument("--diseases", type=Path, default=DEFAULT_DISEASES)
     parser.add_argument("--log-level", default="info")
     args = parser.parse_args(argv)
 
@@ -234,7 +316,7 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     try:
-        engine = Engine(args.model, args.classes, args.metadata)
+        engine = Engine(args.model, args.classes, args.metadata, args.diseases)
     except Exception as exc:  # noqa: BLE001 - startup failures are reported on stdout
         _respond(
             {

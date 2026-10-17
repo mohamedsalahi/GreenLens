@@ -92,6 +92,24 @@ def test_predict_returns_ranked_probabilities(worker):
     assert all(p["label"] for p in predictions)
 
 
+def test_predictions_carry_disease_guidance(worker):
+    proc, _ = worker
+    image = first_dataset_image()
+    if image is None:
+        pytest.skip("dataset not present")
+    response = request(
+        proc, {"id": 7, "type": "predict", "path": str(image), "top_k": 3}
+    )
+    assert response["type"] == "result"
+    for prediction in response["predictions"]:
+        disease = prediction["disease"]
+        assert disease is not None, "every class should have guidance in the database"
+        assert disease["feedback"]
+        assert disease["about"]
+        assert disease["sources"], "guidance must cite its sources"
+        assert all(source["url"].startswith("http") for source in disease["sources"])
+
+
 def test_several_requests_share_one_process(worker):
     proc, _ = worker
     for request_id in (10, 11, 12):
