@@ -68,8 +68,9 @@ on Windows) and the `ml/` and `artifacts/` directories in the working
 directory (the checkout doubles as the install location). `GREENLENS_HOME`
 points it at a different directory and `GREENLENS_PYTHON` overrides the
 interpreter. The "Open image" button uses the native file dialog; the command
-line argument works everywhere. For Nix users, the included flake wraps all of
-the above in dev shells (`nix develop .`); it is not needed on other systems.
+line argument works everywhere. For Nix users, the included flake provides the
+Rust toolchain, the GUI system libraries, and a Python 3.12 environment in dev
+shells (`nix develop .`); it is not needed on other systems.
 
 ### Linux
 
