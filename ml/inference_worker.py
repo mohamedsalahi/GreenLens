@@ -166,6 +166,7 @@ def serve(engine: Engine) -> int:
         if not line:
             continue
         request_id: Any = None
+        path: Any = None
         try:
             request = json.loads(line)
             if not isinstance(request, dict):
