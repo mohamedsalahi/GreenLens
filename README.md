@@ -131,6 +131,23 @@ python3.12 -m venv .venv
 Training uses the GPU when one is available and falls back to the CPU. The
 first run downloads the ImageNet weights for VGG16 into the Keras cache.
 
+### Training in Docker
+
+A headless image provides the same environment (python 3.12 and the pinned
+packages) if you prefer not to install them on the host. Build it with the
+`ml/` directory as the context and mount `data/` and `artifacts/` into it:
+
+```sh
+docker build -t greenlens-ml ml/
+docker run --rm -v "$PWD/data:/work/data" greenlens-ml \
+    python ml/prepare_data.py --raw data/raw/plantvillage/PlantVillage --out data/processed
+docker run --rm -v "$PWD/data:/work/data" -v "$PWD/artifacts:/work/artifacts" greenlens-ml \
+    python ml/train.py --manifest data/processed/manifest.json --artifacts artifacts
+```
+
+Add `--gpus all` to the training run for GPU use (the host needs
+`nvidia-container-toolkit`); without it the container trains on the CPU.
+
 ## Tests
 
 ```sh
