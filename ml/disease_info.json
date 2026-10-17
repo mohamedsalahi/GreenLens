@@ -80,6 +80,7 @@
     ],
     "egypt": null,
     "sources": [
+      {"title": "Potato Health Management in North Carolina", "publisher": "NC State Extension (Vernon James Research and Extension Center)", "url": "https://vernonjames.ces.ncsu.edu/soil-science/soil-fertility-management-information/potato-health-management-in-north-carolina/"},
       {"title": "Early Blight of Potato (PP1892)", "publisher": "NDSU Agriculture, North Dakota State University Extension", "url": "https://www.ndsu.edu/agriculture/extension/publications/early-blight-potato"}
     ]
   },
@@ -335,6 +336,7 @@
     ],
     "egypt": "No Egypt-specific source was verified, but the disease occurs in warm, humid subtropical production like Egypt's, so summer tomato plantings with dense canopies are at risk.",
     "sources": [
+      {"title": "Crop Protectants for Controlling Diseases of Vegetable Crops in Greenhouses", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/crop-protectants-for-controlling-diseases-of-vegetable-crops-in-greenhouses"},
       {"title": "Target Spot of Tomato in Florida (PP351)", "publisher": "UF/IFAS Extension EDIS", "url": "https://edis.ifas.ufl.edu/publication/PP351"},
       {"title": "Host-Specific Toxin Production by the Tomato Target Leaf Spot Pathogen Corynespora cassiicola", "publisher": "Turkish Journal of Agriculture and Forestry (TUBITAK)", "url": "https://journals.tubitak.gov.tr/agriculture/vol28/iss6/2"}
     ]
