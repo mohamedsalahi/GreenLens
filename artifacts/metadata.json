@@ -51,9 +51,9 @@
   "augmentation": "horizontal flip, rotation 0.05, zoom 0.1 (training only)"
  },
  "test_metrics": {
-  "accuracy": 0.9547657512116317,
-  "macro_f1": 0.9495327847293087,
-  "weighted_f1": 0.9551719004745796
+  "accuracy": 0.9554119547657512,
+  "macro_f1": 0.950138860675358,
+  "weighted_f1": 0.9558073383102005
  },
  "environment": {
   "tensorflow": "2.21.0",
