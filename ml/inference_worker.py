@@ -47,11 +47,21 @@ log = logging.getLogger("greenlens.worker")
 def human_label(class_id: str) -> str:
     """Turn a PlantVillage folder name into something readable.
 
-    Tomato___Late_blight -> Tomato: Late blight
+    Potato___Late_blight -> Potato: Late blight
     Pepper__bell___healthy -> Pepper bell: healthy
+    Tomato__Tomato_YellowLeaf__Curl_Virus -> Tomato: YellowLeaf Curl Virus
     """
-    label = class_id.replace("___", ": ").replace("__", " ")
-    return label.replace("_", " ")
+    words = [w for w in class_id.split("_") if w]
+    crop = words[0]
+    if len(words) > 1 and words[1] == "bell":
+        # PlantVillage writes the bell pepper crop as Pepper__bell.
+        crop += " bell"
+        del words[1]
+    disease = words[1:]
+    if disease and disease[0].lower() == crop.split()[0].lower():
+        # Some tomato folders repeat the crop in the disease name.
+        disease = disease[1:]
+    return f"{crop}: {' '.join(disease)}" if disease else crop
 
 
 class Engine:
