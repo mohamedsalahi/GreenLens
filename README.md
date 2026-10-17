@@ -55,18 +55,43 @@ The trained model is committed so the app runs without retraining:
 
 ## Building and running
 
-The repository ships Nix flake dev shells with everything needed (Rust,
-Python, GUI and CUDA libraries). From the project root:
+The app is an ordinary Rust project; build the release binary and run it:
 
 ```sh
-nix develop .
-cargo run --release -- path/to/leaf.jpg
+cargo build --release
+./target/release/greenlens            # pick an image in the window
+./target/release/greenlens leaf.jpg   # or open one right away
 ```
 
-Without the argument the app starts with an empty preview and waits for the
-"Open image" button. The app expects the Python environment at `.venv/bin/python`
-and the worker script and model relative to the project root; `GREENLENS_PYTHON`
-and `GREENLENS_HOME` can override both paths.
+Build prerequisites for the window (glow/OpenGL back end, X11 and Wayland):
+
+- a recent stable Rust toolchain
+- Debian/Ubuntu: `libxkbcommon-dev libwayland-dev libx11-dev libxcursor-dev libxi-dev libxrandr-dev libgl1-mesa-dev`
+- Fedora: `libxkbcommon-devel wayland-devel libX11-devel libXcursor-devel libXi-devel libXrandr-devel mesa-libGL-devel`
+- Arch: `libxkbcommon wayland libx11 libxcursor libxi libxrandr mesa`
+- an OpenGL 3.3 capable driver at runtime
+
+The inference worker needs Python 3.12 with the packages from
+`ml/requirements.txt`:
+
+```sh
+python3.12 -m venv .venv
+.venv/bin/pip install -r ml/requirements.txt
+```
+
+On Linux the `tensorflow[and-cuda]` extra also pulls the CUDA runtime wheels;
+GPU inference additionally needs a recent NVIDIA driver, otherwise TensorFlow
+falls back to the CPU by itself. On macOS install plain `tensorflow` without
+the extra.
+
+The binary expects the virtualenv at `.venv/bin/python` and the `ml/` and
+`artifacts/` directories in the working directory (the checkout doubles as the
+install location). `GREENLENS_HOME` points it at a different directory and
+`GREENLENS_PYTHON` overrides the interpreter. The "Open image" button uses the
+desktop file dialog; the command line argument works everywhere.
+
+For Nix users, the included flake wraps all of the above in dev shells
+(`nix develop .`); it is not needed on other systems.
 
 ## Reproducing the model
 
@@ -75,9 +100,10 @@ and point the preparation script at the folder that contains the class
 directories:
 
 ```sh
-nix develop .#ml -c 'uv venv -p 3.12 && uv pip install -r ml/requirements.txt'
-nix develop . -c .venv/bin/python ml/prepare_data.py --raw data/raw/plantvillage/PlantVillage --out data/processed
-nix develop . -c .venv/bin/python ml/train.py --manifest data/processed/manifest.json --artifacts artifacts
+python3.12 -m venv .venv
+.venv/bin/pip install -r ml/requirements.txt
+.venv/bin/python ml/prepare_data.py --raw data/raw/plantvillage/PlantVillage --out data/processed
+.venv/bin/python ml/train.py --manifest data/processed/manifest.json --artifacts artifacts
 ```
 
 Training uses the GPU when one is available and falls back to the CPU. The
@@ -86,8 +112,8 @@ first run downloads the ImageNet weights for VGG16 into the Keras cache.
 ## Tests
 
 ```sh
-nix develop . -c cargo test
-nix develop . -c .venv/bin/python -m pytest ml/tests
+cargo test
+.venv/bin/python -m pytest ml/tests
 ```
 
 The Rust side covers protocol parsing plus integration tests that drive the
