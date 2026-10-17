@@ -194,7 +194,7 @@ impl Worker {
         self.send(&serde_json::json!({
             "id": id,
             "type": "predict",
-            "path": path,
+            "path": path.to_string_lossy(),
             "top_k": 3,
         }))?;
         Ok(id)
