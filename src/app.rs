@@ -8,7 +8,7 @@
 //! when they match the pending request.
 
 use std::path::PathBuf;
-use std::sync::mpsc::{self, Receiver};
+use std::sync::mpsc::{self, Receiver, TryRecvError};
 use std::sync::Arc;
 use std::thread;
 use std::time::{Duration, Instant};
@@ -176,17 +176,27 @@ impl GreenLensApp {
         if !self.dialog_open {
             return;
         }
-        let answer = self
-            .dialog_rx
-            .as_ref()
-            .and_then(|rx| rx.try_recv().ok());
-        if let Some(file) = answer {
-            self.dialog_open = false;
-            self.dialog_rx = None;
-            match file {
-                Some(path) => self.load_selected(ctx, path),
-                None => self.status = "No file was selected.".to_owned(),
+        let received = match self.dialog_rx.as_ref() {
+            Some(rx) => rx.try_recv(),
+            None => return,
+        };
+        match received {
+            Ok(Some(path)) => {
+                self.dialog_open = false;
+                self.dialog_rx = None;
+                self.load_selected(ctx, path);
             }
+            Ok(None) => {
+                self.dialog_open = false;
+                self.dialog_rx = None;
+                self.status = "No file was selected.".to_owned();
+            }
+            Err(TryRecvError::Disconnected) => {
+                self.dialog_open = false;
+                self.dialog_rx = None;
+                self.status = "The file dialog closed unexpectedly.".to_owned();
+            }
+            Err(TryRecvError::Empty) => {}
         }
     }
 
