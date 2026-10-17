@@ -111,6 +111,9 @@ impl GreenLensApp {
                         info.input_size.get(1).copied().unwrap_or(224)
                     );
                     self.worker_state = WorkerState::Ready(info);
+                    if self.selected.is_some() && matches!(self.analysis, Analysis::Idle) {
+                        self.start_analysis();
+                    }
                 }
                 WorkerEvent::Predictions { id, predictions, .. } => {
                     let elapsed = match &self.analysis {
@@ -574,10 +577,8 @@ impl eframe::App for GreenLensApp {
         let ctx = ui.ctx().clone();
         self.poll_worker();
         self.poll_dialog(&ctx);
-        if matches!(self.worker_state, WorkerState::Ready(_)) {
-            if let Some(path) = self.pending_image.take() {
-                self.load_selected(&ctx, path);
-            }
+        if let Some(path) = self.pending_image.take() {
+            self.load_selected(&ctx, path);
         }
         self.check_timeout(&ctx);
         if matches!(self.worker_state, WorkerState::Starting) {
