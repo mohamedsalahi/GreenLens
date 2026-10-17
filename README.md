@@ -106,8 +106,14 @@ py -3.12 -m venv .venv
 .\target\release\greenlens.exe leaf.jpg
 ```
 
-Note that pip's TensorFlow runs on the CPU on Windows; for GPU inference use
-WSL2, where the Linux steps apply unchanged.
+The pip build of TensorFlow has been CPU only on native Windows since
+TensorFlow 2.11, so the app works there but classifies without the GPU. For
+GPU inference use WSL2: run `wsl --install` from an elevated PowerShell
+prompt, do the Linux steps inside the distro (the regular Windows NVIDIA
+driver already exposes CUDA to WSL2, do not install a driver inside the
+distro), and WSLg shows the window like any other app. TensorFlow's pip
+installation guide has the details:
+[tensorflow.google.cn/install/pip](https://tensorflow.google.cn/install/pip)
 
 ## Reproducing the model
 
