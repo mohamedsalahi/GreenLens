@@ -62,6 +62,7 @@ pub struct GreenLensApp {
     analysis: Analysis,
     dialog_open: bool,
     dialog_rx: Option<Receiver<Option<PathBuf>>>,
+    preview_rx: Option<Receiver<Result<(egui::ColorImage, (u32, u32)), String>>>,
     pending_image: Option<PathBuf>,
     status: String,
 }
@@ -89,6 +90,7 @@ impl GreenLensApp {
             analysis: Analysis::Idle,
             dialog_open: false,
             dialog_rx: None,
+            preview_rx: None,
             pending_image: image,
             status,
         }
@@ -175,7 +177,7 @@ impl GreenLensApp {
         }
     }
 
-    fn poll_dialog(&mut self, ctx: &egui::Context) {
+    fn poll_dialog(&mut self) {
         if !self.dialog_open {
             return;
         }
@@ -187,7 +189,7 @@ impl GreenLensApp {
             Ok(Some(path)) => {
                 self.dialog_open = false;
                 self.dialog_rx = None;
-                self.load_selected(ctx, path);
+                self.load_selected(path);
             }
             Ok(None) => {
                 self.dialog_open = false;
@@ -203,20 +205,44 @@ impl GreenLensApp {
         }
     }
 
-    fn load_selected(&mut self, ctx: &egui::Context, path: PathBuf) {
-        match load_preview(ctx, &path) {
-            Ok((texture, dimensions)) => {
-                let name = file_name_of(&path);
-                self.selected = Some(path);
-                self.preview = Some(texture);
+    fn load_selected(&mut self, path: PathBuf) {
+        let name = file_name_of(&path);
+        self.selected = Some(path.clone());
+        self.preview = None;
+        self.image_dimensions = None;
+        self.analysis = Analysis::Idle;
+        self.status = format!("Selected {name}.");
+        let (tx, rx) = mpsc::channel();
+        self.preview_rx = Some(rx);
+        thread::spawn(move || {
+            let _ = tx.send(decode_preview(&path));
+        });
+        self.start_analysis();
+    }
+
+    fn poll_preview(&mut self, ctx: &egui::Context) {
+        let received = match self.preview_rx.as_ref() {
+            Some(rx) => rx.try_recv(),
+            None => return,
+        };
+        match received {
+            Ok(Ok((image, dimensions))) => {
+                self.preview_rx = None;
+                self.preview = Some(ctx.load_texture(
+                    "selected-image",
+                    image,
+                    egui::TextureOptions::default(),
+                ));
                 self.image_dimensions = Some(dimensions);
-                self.analysis = Analysis::Idle;
-                self.status = format!("Selected {name}.");
-                self.start_analysis();
             }
-            Err(err) => {
+            Ok(Err(err)) => {
+                self.preview_rx = None;
                 self.status = format!("Could not read that image: {err}");
             }
+            Err(TryRecvError::Disconnected) => {
+                self.preview_rx = None;
+            }
+            Err(TryRecvError::Empty) => {}
         }
     }
 
@@ -576,14 +602,15 @@ impl eframe::App for GreenLensApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         let ctx = ui.ctx().clone();
         self.poll_worker();
-        self.poll_dialog(&ctx);
+        self.poll_dialog();
+        self.poll_preview(&ctx);
         if let Some(path) = self.pending_image.take() {
-            self.load_selected(&ctx, path);
+            self.load_selected(path);
         }
         self.check_timeout(&ctx);
-        if matches!(self.worker_state, WorkerState::Starting) {
-            // The first paint happens before the worker is up; without this
-            // the window sits on the loading frame until the next input event.
+        if matches!(self.worker_state, WorkerState::Starting) || self.preview_rx.is_some() {
+            // Background work (worker start-up, image decoding) finishes
+            // without an input event; keep painting until the result lands.
             ctx.request_repaint_after(Duration::from_millis(100));
         }
         self.header(ui);
@@ -933,10 +960,7 @@ fn project_root() -> PathBuf {
     std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."))
 }
 
-fn load_preview(
-    ctx: &egui::Context,
-    path: &std::path::Path,
-) -> Result<(egui::TextureHandle, (u32, u32)), String> {
+fn decode_preview(path: &std::path::Path) -> Result<(egui::ColorImage, (u32, u32)), String> {
     let image = image::open(path).map_err(|err| err.to_string())?;
     let rgba = image.to_rgba8();
     let (width, height) = rgba.dimensions();
@@ -944,8 +968,7 @@ fn load_preview(
         [width as usize, height as usize],
         rgba.as_raw(),
     );
-    let texture = ctx.load_texture("selected-image", color, egui::TextureOptions::default());
-    Ok((texture, (width, height)))
+    Ok((color, (width, height)))
 }
 
 fn file_name_of(path: &std::path::Path) -> String {
