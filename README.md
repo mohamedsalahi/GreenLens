@@ -37,6 +37,11 @@ worker, and displays the ranked class predictions with their probabilities.
 - Held-out test split (3,095 images): **95.5% accuracy, macro F1 0.95**.
   Per-class precision/recall and the confusion matrix are in
   `artifacts/test_report.json` and `artifacts/confusion_matrix.png`.
+- Caveat: PlantVillage is lab-style single-leaf photography and contains
+  visually near-duplicate photos beyond the exact copies we drop, so the score
+  describes controlled images, not real field conditions. Expanding training
+  data with more diverse images (field photos, varied lighting and backgrounds)
+  is future work.
 
 Classes, grouped by crop: Pepper bell (bacterial spot, healthy); Potato (early
 blight, late blight, healthy); Tomato (bacterial spot, early blight, late
