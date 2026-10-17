@@ -21,6 +21,40 @@ pub struct Prediction {
     pub class: String,
     pub label: String,
     pub probability: f64,
+    #[serde(default)]
+    pub disease: Option<DiseaseInfo>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DiseaseSource {
+    pub title: String,
+    pub publisher: String,
+    pub url: String,
+}
+
+/// Guidance for one predicted class, looked up in the SQLite reference
+/// database (`artifacts/diseases.db`) by the worker.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct DiseaseInfo {
+    pub name: String,
+    #[serde(default)]
+    pub pathogen: Option<String>,
+    #[serde(default)]
+    pub healthy: bool,
+    pub feedback: String,
+    pub about: String,
+    #[serde(default)]
+    pub symptoms: Option<String>,
+    #[serde(default)]
+    pub spread: Option<String>,
+    #[serde(default)]
+    pub egypt: Option<String>,
+    #[serde(default)]
+    pub management: Vec<String>,
+    #[serde(default)]
+    pub treatment: Vec<String>,
+    #[serde(default)]
+    pub sources: Vec<DiseaseSource>,
 }
 
 #[derive(Debug, Clone, Deserialize, PartialEq)]

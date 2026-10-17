@@ -15,7 +15,7 @@ use std::time::{Duration, Instant};
 
 use eframe::egui::{self, Align, Color32, FontFamily, FontId, RichText, Stroke};
 
-use crate::worker::{Prediction, Worker, WorkerEvent, WorkerInfo};
+use crate::worker::{DiseaseInfo, Prediction, Worker, WorkerEvent, WorkerInfo};
 
 // Deep, quiet greens for the room of the app, one vivid accent for plants.
 const BG_TOP: Color32 = Color32::from_rgb(8, 15, 11);
@@ -30,6 +30,7 @@ const ACCENT_SOFT: Color32 = Color32::from_rgb(38, 126, 76);
 const TEXT_BRIGHT: Color32 = Color32::from_rgb(230, 245, 235);
 const TEXT_DIM: Color32 = Color32::from_rgb(138, 162, 146);
 const TEXT_FAINT: Color32 = Color32::from_rgb(95, 115, 100);
+const BODY: Color32 = Color32::from_rgb(190, 208, 196);
 const INK: Color32 = Color32::from_rgb(6, 28, 16);
 const AMBER: Color32 = Color32::from_rgb(255, 179, 0);
 const RED: Color32 = Color32::from_rgb(255, 105, 97);
@@ -44,6 +45,9 @@ pub enum WorkerState {
 struct AnalysisOutcome {
     predictions: Vec<Prediction>,
     elapsed: f32,
+    /// Which prediction the guidance panel is showing; candidates are
+    /// clickable, so this can point at any of them.
+    focused: usize,
 }
 
 enum Analysis {
@@ -52,6 +56,8 @@ enum Analysis {
     Done(AnalysisOutcome),
     Failed(String),
 }
+
+type PreviewPayload = Result<(egui::ColorImage, (u32, u32)), String>;
 
 pub struct GreenLensApp {
     worker: Option<Worker>,
@@ -62,7 +68,7 @@ pub struct GreenLensApp {
     analysis: Analysis,
     dialog_open: bool,
     dialog_rx: Option<Receiver<Option<PathBuf>>>,
-    preview_rx: Option<Receiver<Result<(egui::ColorImage, (u32, u32)), String>>>,
+    preview_rx: Option<Receiver<PreviewPayload>>,
     pending_image: Option<PathBuf>,
     status: String,
 }
@@ -129,6 +135,7 @@ impl GreenLensApp {
                         self.analysis = Analysis::Done(AnalysisOutcome {
                             predictions,
                             elapsed: elapsed.as_secs_f32(),
+                            focused: 0,
                         });
                         self.status = if finished {
                             "The worker returned no predictions.".to_owned()
@@ -533,6 +540,7 @@ impl GreenLensApp {
             }
             ui.add_space(14.0);
 
+            let mut jumped: Option<usize> = None;
             match &self.analysis {
                 Analysis::Idle => {
                     ui.label(
@@ -578,8 +586,13 @@ impl GreenLensApp {
                     if outcome.predictions.is_empty() {
                         ui.colored_label(AMBER, "The worker returned no predictions.");
                     } else {
-                        prediction_detail(ui, &outcome.predictions);
+                        jumped = prediction_detail(ui, &outcome.predictions, outcome.focused);
                     }
+                }
+            }
+            if let Some(index) = jumped {
+                if let Analysis::Done(updated) = &mut self.analysis {
+                    updated.focused = index;
                 }
             }
 
@@ -620,55 +633,83 @@ impl eframe::App for GreenLensApp {
             .show(ui, |ui| {
                 let rect = ui.max_rect();
                 paint_gradient(ui, rect, BG_TOP, BG_BOTTOM);
-                egui::Frame::new()
-                    .inner_margin(egui::Margin::symmetric(28, 24))
+                egui::ScrollArea::vertical()
+                    .auto_shrink([false, false])
                     .show(ui, |ui| {
-                        let spacing = 26.0;
-                        let col_width = (ui.available_width() - spacing) / 2.0;
-                        ui.spacing_mut().item_spacing.x = spacing;
-                        ui.horizontal_top(|ui| {
-                            ui.allocate_ui_with_layout(
-                                egui::vec2(col_width, 0.0),
-                                egui::Layout::top_down(Align::Min),
-                                |ui| {
-                                    ui.set_width(col_width);
-                                    self.image_column(ui);
-                                },
-                            );
-                            ui.allocate_ui_with_layout(
-                                egui::vec2(col_width, 0.0),
-                                egui::Layout::top_down(Align::Min),
-                                |ui| {
-                                    ui.set_width(col_width);
-                                    self.results_column(ui);
-                                },
-                            );
-                        });
+                        egui::Frame::new()
+                            .inner_margin(egui::Margin::symmetric(28, 24))
+                            .show(ui, |ui| {
+                                let spacing = 26.0;
+                                let col_width = (ui.available_width() - spacing) / 2.0;
+                                ui.spacing_mut().item_spacing.x = spacing;
+                                ui.horizontal_top(|ui| {
+                                    ui.allocate_ui_with_layout(
+                                        egui::vec2(col_width, 0.0),
+                                        egui::Layout::top_down(Align::Min),
+                                        |ui| {
+                                            ui.set_width(col_width);
+                                            self.image_column(ui);
+                                        },
+                                    );
+                                    ui.allocate_ui_with_layout(
+                                        egui::vec2(col_width, 0.0),
+                                        egui::Layout::top_down(Align::Min),
+                                        |ui| {
+                                            ui.set_width(col_width);
+                                            self.results_column(ui);
+                                        },
+                                    );
+                                });
+                                if let Analysis::Done(outcome) = &self.analysis {
+                                    if let Some(prediction) =
+                                        outcome.predictions.get(outcome.focused)
+                                    {
+                                        if let Some(disease) = &prediction.disease {
+                                            ui.add_space(24.0);
+                                            disease_guidance(ui, disease);
+                                        }
+                                    }
+                                }
+                            });
                     });
             });
     }
 }
 
-fn prediction_detail(ui: &mut egui::Ui, predictions: &[Prediction]) {
+fn prediction_detail(
+    ui: &mut egui::Ui,
+    predictions: &[Prediction],
+    focused: usize,
+) -> Option<usize> {
     let top = &predictions[0];
-    ui.horizontal(|ui| {
-        confidence_gauge(ui, top.probability as f32);
-        ui.add_space(18.0);
-        ui.vertical(|ui| {
-            ui.add_space(8.0);
-            ui.label(
-                RichText::new("MOST LIKELY")
-                    .size(11.5)
-                    .strong()
-                    .color(TEXT_FAINT)
-                    .extra_letter_spacing(2.0),
-            );
-            ui.add_space(4.0);
-            ui.label(RichText::new(&top.label).size(25.0).strong().color(ACCENT));
-            ui.add_space(3.0);
-            ui.label(RichText::new(&top.class).size(13.0).color(TEXT_DIM));
-        });
-    });
+    let mut jumped = None;
+    let top_row = ui
+        .horizontal(|ui| {
+            confidence_gauge(ui, top.probability as f32);
+            ui.add_space(18.0);
+            ui.vertical(|ui| {
+                ui.add_space(8.0);
+                ui.label(
+                    RichText::new("MOST LIKELY")
+                        .size(11.5)
+                        .strong()
+                        .color(TEXT_FAINT)
+                        .extra_letter_spacing(2.0),
+                );
+                ui.add_space(4.0);
+                ui.label(RichText::new(&top.label).size(25.0).strong().color(ACCENT));
+                ui.add_space(3.0);
+                ui.label(RichText::new(&top.class).size(13.0).color(TEXT_DIM));
+            });
+        })
+        .response;
+    let top_response = top_row.interact(egui::Sense::click());
+    if top_response.clicked() && focused != 0 {
+        jumped = Some(0);
+    }
+    if top_response.hovered() && focused != 0 {
+        ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
+    }
 
     if predictions.len() > 1 {
         ui.add_space(20.0);
@@ -679,26 +720,202 @@ fn prediction_detail(ui: &mut egui::Ui, predictions: &[Prediction]) {
                 .color(TEXT_FAINT)
                 .extra_letter_spacing(2.0),
         );
-        for prediction in &predictions[1..] {
-            ui.add_space(11.0);
-            ui.horizontal(|ui| {
-                ui.label(
-                    RichText::new(&prediction.label)
-                        .size(14.5)
-                        .color(TEXT_BRIGHT),
-                );
-                ui.with_layout(egui::Layout::right_to_left(Align::Center), |ui| {
-                    ui.label(
-                        RichText::new(format!("{:.1}%", prediction.probability * 100.0))
-                            .size(13.5)
-                            .color(TEXT_DIM),
+        for (index, prediction) in predictions.iter().enumerate().skip(1) {
+            let selected = index == focused;
+            ui.add_space(7.0);
+            let row = egui::Frame::new()
+                .fill(if selected {
+                    Color32::from_rgb(17, 40, 26)
+                } else {
+                    Color32::TRANSPARENT
+                })
+                .corner_radius(9)
+                .inner_margin(egui::Margin::symmetric(10, 8))
+                .show(ui, |ui| {
+                    ui.horizontal(|ui| {
+                        ui.label(
+                            RichText::new(&prediction.label)
+                                .size(14.5)
+                                .color(if selected { ACCENT } else { TEXT_BRIGHT }),
+                        );
+                        ui.with_layout(egui::Layout::right_to_left(Align::Center), |ui| {
+                            ui.label(
+                                RichText::new(format!(
+                                    "{:.1}%",
+                                    prediction.probability * 100.0
+                                ))
+                                .size(13.5)
+                                .color(TEXT_DIM),
+                            );
+                        });
+                    });
+                    ui.add_space(5.0);
+                    bar(
+                        ui,
+                        prediction.probability as f32,
+                        if selected { ACCENT } else { ACCENT_SOFT },
                     );
                 });
-            });
-            ui.add_space(5.0);
-            bar(ui, prediction.probability as f32, ACCENT_SOFT);
+            let response = row.response.interact(egui::Sense::click());
+            if response.clicked() {
+                jumped = Some(index);
+            }
+            if response.hovered() {
+                ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
+            }
         }
+        ui.add_space(10.0);
+        ui.label(
+            RichText::new("Click a candidate to see its guidance below.")
+                .size(12.0)
+                .color(TEXT_FAINT),
+        );
     }
+    jumped
+}
+
+/// Full-width guidance card for the focused prediction: what the disease is,
+/// how to recognize and fight it, notes for Egypt, and the cited sources.
+fn disease_guidance(ui: &mut egui::Ui, disease: &DiseaseInfo) {
+    section_title(ui, "DISEASE GUIDANCE", None);
+    ui.add_space(8.0);
+    card(ui, |ui| {
+        ui.horizontal_wrapped(|ui| {
+            ui.label(
+                RichText::new(&disease.name)
+                    .size(21.0)
+                    .strong()
+                    .color(if disease.healthy { ACCENT } else { TEXT_BRIGHT }),
+            );
+            if let Some(pathogen) = &disease.pathogen {
+                ui.add_space(10.0);
+                ui.label(RichText::new(pathogen).size(13.5).italics().color(TEXT_DIM));
+            }
+        });
+        ui.add_space(11.0);
+
+        let (tint, edge) = if disease.healthy {
+            (Color32::from_rgb(13, 47, 29), ACCENT)
+        } else {
+            (Color32::from_rgb(46, 36, 14), AMBER)
+        };
+        egui::Frame::new()
+            .fill(tint)
+            .corner_radius(10)
+            .inner_margin(egui::Margin::symmetric(14, 11))
+            .show(ui, |ui| {
+                ui.label(
+                    RichText::new(if disease.healthy { "KEEP IT UP" } else { "WHAT TO DO" })
+                        .size(11.0)
+                        .strong()
+                        .color(edge)
+                        .extra_letter_spacing(1.5),
+                );
+                ui.add_space(3.0);
+                ui.label(RichText::new(&disease.feedback).size(14.5).color(TEXT_BRIGHT));
+            });
+        ui.add_space(16.0);
+
+        let spacing = 26.0;
+        let col_width = (ui.available_width() - spacing) / 2.0;
+        ui.spacing_mut().item_spacing.x = spacing;
+        ui.horizontal_top(|ui| {
+            ui.allocate_ui_with_layout(
+                egui::vec2(col_width, 0.0),
+                egui::Layout::top_down(Align::Min),
+                |ui| {
+                    ui.set_width(col_width);
+                    guidance_text(ui, "ABOUT", &disease.about);
+                    if let Some(symptoms) = disease.symptoms.as_deref() {
+                        guidance_text(ui, "SYMPTOMS", symptoms);
+                    }
+                    if let Some(spread) = disease.spread.as_deref() {
+                        guidance_text(ui, "HOW IT SPREADS", spread);
+                    }
+                },
+            );
+            ui.allocate_ui_with_layout(
+                egui::vec2(col_width, 0.0),
+                egui::Layout::top_down(Align::Min),
+                |ui| {
+                    ui.set_width(col_width);
+                    if !disease.management.is_empty() {
+                        step_list(
+                            ui,
+                            if disease.healthy { "PREVENTION" } else { "HOW TO COMBAT IT" },
+                            &disease.management,
+                        );
+                    }
+                    if !disease.treatment.is_empty() {
+                        step_list(ui, "TREATMENT OPTIONS", &disease.treatment);
+                        ui.label(
+                            RichText::new(
+                                "Active ingredients are examples from the cited sources - \
+                                 always follow the locally registered product label.",
+                            )
+                            .size(12.0)
+                            .color(TEXT_FAINT),
+                        );
+                        ui.add_space(14.0);
+                    }
+                    if let Some(egypt) = disease.egypt.as_deref() {
+                        guidance_text(ui, "LOCAL CONTEXT (EGYPT)", egypt);
+                    }
+                    if !disease.sources.is_empty() {
+                        ui.label(
+                            RichText::new("SOURCES")
+                                .size(11.5)
+                                .strong()
+                                .color(TEXT_FAINT)
+                                .extra_letter_spacing(2.0),
+                        );
+                        ui.add_space(7.0);
+                        for source in &disease.sources {
+                            ui.hyperlink_to(
+                                RichText::new(&source.title).size(13.0).color(ACCENT),
+                                &source.url,
+                            );
+                            ui.label(
+                                RichText::new(&source.publisher)
+                                    .size(11.5)
+                                    .color(TEXT_FAINT),
+                            );
+                            ui.add_space(7.0);
+                        }
+                    }
+                },
+            );
+        });
+    });
+}
+
+fn guidance_text(ui: &mut egui::Ui, heading: &str, body: &str) {
+    ui.label(
+        RichText::new(heading)
+            .size(11.5)
+            .strong()
+            .color(TEXT_FAINT)
+            .extra_letter_spacing(2.0),
+    );
+    ui.add_space(5.0);
+    ui.label(RichText::new(body).size(13.5).color(BODY));
+    ui.add_space(14.0);
+}
+
+fn step_list(ui: &mut egui::Ui, heading: &str, steps: &[String]) {
+    ui.label(
+        RichText::new(heading)
+            .size(11.5)
+            .strong()
+            .color(TEXT_FAINT)
+            .extra_letter_spacing(2.0),
+    );
+    ui.add_space(6.0);
+    for step in steps {
+        ui.label(RichText::new(format!("- {step}")).size(13.5).color(BODY));
+        ui.add_space(5.0);
+    }
+    ui.add_space(9.0);
 }
 
 fn confidence_gauge(ui: &mut egui::Ui, value: f32) {
