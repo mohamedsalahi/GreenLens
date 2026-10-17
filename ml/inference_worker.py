@@ -71,7 +71,7 @@ class Engine:
         os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
         import tensorflow as tf
 
-        from preprocess import load_image, preprocess_array
+        from preprocess import IMAGE_SIZE, load_image, preprocess_array
 
         self._tf = tf
         self._load_image = load_image
@@ -89,6 +89,12 @@ class Engine:
             if metadata_path.is_file()
             else {}
         )
+        recorded_size = self.metadata.get("input_size")
+        if recorded_size is not None and tuple(recorded_size) != tuple(IMAGE_SIZE):
+            raise ValueError(
+                f"metadata records input size {list(recorded_size)} but the "
+                f"preprocessing pipeline uses {list(IMAGE_SIZE)}"
+            )
 
         for gpu in tf.config.list_physical_devices("GPU"):
             tf.config.experimental.set_memory_growth(gpu, True)
