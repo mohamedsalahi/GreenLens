@@ -1,0 +1,426 @@
+{
+  "Pepper__bell___Bacterial_spot": {
+    "crop": "Pepper bell",
+    "name": "Bacterial spot",
+    "pathogen": "Xanthomonas spp. (X. euvesicatoria prevalent in the region)",
+    "healthy": false,
+    "feedback": "Remove badly affected plants and debris, never handle plants while they are wet, and apply copper-based sprays preventatively - there is no cure once lesions are established.",
+    "about": "Bacterial spot is a serious disease of peppers and tomatoes caused by several closely related Xanthomonas bacteria. It reduces yield through defoliation, which exposes fruit to sunscald, and by making fruit unmarketable.",
+    "symptoms": "Small water-soaked spots on leaves with faint yellow halos that darken to brown or black, rarely larger than about 3 mm, often merging into blighted areas. On fruit, raised blisters become dark brown, rough, scab-like spots. Heavy defoliation exposes fruit to sunscald.",
+    "spread": "Seed-borne and transplant-borne; survives on volunteer plants and crop debris. Bacteria enter through stomata and wounds and move with wind-driven rain, aerosols and handling wet plants. Favored by 24-30 C with frequent rain and high humidity; in greenhouses it can spread several meters through overhead irrigation.",
+    "management": [
+      "Use certified pathogen-free seed and disease-free transplants - the most effective control.",
+      "Treat seed (bleach, hydrochloric acid or hot water; not for pelleted seed).",
+      "Sanitize trays, benches, tools and hands.",
+      "Rotate at least one year away from peppers, tomatoes and other solanaceous crops.",
+      "Remove volunteer plants, weeds and cull piles.",
+      "Never work among plants when they are wet."
+    ],
+    "treatment": [
+      "Copper-based sprays, often combined with mancozeb (for example copper hydroxide + mancozeb tank mixes).",
+      "Streptomycin where registered.",
+      "Bacteriophage products (for example AgriPhage).",
+      "Plant defense activators such as acibenzolar-S-methyl (Actigard).",
+      "Organic options: Bacillus-based products (Serenade, Serifel, LifeGard). All are preventative - they slow spread but do not cure infected tissue."
+    ],
+    "egypt": "Xanthomonas vesicatoria is reported as the prevalent bacterial spot species in Egypt, and Egyptian surveys have isolated it from tomato fruit and seed lots - which makes certified seed and transplant hygiene especially important locally.",
+    "sources": [
+      {"title": "Bacterial Spot of Pepper and Tomato", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/bacterial-spot-of-pepper-and-tomato"},
+      {"title": "A centenary for bacterial spot of tomato and pepper", "publisher": "Molecular Plant Pathology (via PubMed Central)", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8578828/"},
+      {"title": "Bacterial wilt and spot of tomato caused by Xanthomonas vesicatoria and Ralstonia solanacearum in Egypt", "publisher": "World Journal of Microbiology and Biotechnology", "url": "https://doi.org/10.1007/s11274-007-9385-8"}
+    ]
+  },
+  "Pepper__bell___healthy": {
+    "crop": "Pepper bell",
+    "name": "Healthy plant",
+    "pathogen": null,
+    "healthy": true,
+    "feedback": "No disease detected - this leaf looks healthy. Keep scouting weekly and keep the crop well managed.",
+    "about": "This class recognizes leaves with no visible disease or pest damage. Healthy plants come from routine preventive care: vegetable crops have little tolerance for damage, so it is easier to prevent problems than to treat them.",
+    "symptoms": null,
+    "spread": null,
+    "management": [
+      "Start with certified seed and healthy transplants.",
+      "Choose varieties with documented disease resistance for your region.",
+      "Scout weekly, especially leaf undersides, and act early when you find problems.",
+      "Rotate crops and remove infected plants, volunteers and weeds.",
+      "Avoid overhead watering late in the day so foliage stays dry overnight.",
+      "Keep plants well fed and watered to avoid stress.",
+      "Minimize broad-spectrum insecticide sprays so natural enemies survive."
+    ],
+    "treatment": [],
+    "egypt": null,
+    "sources": [
+      {"title": "8. Integrated Pest Management (IPM)", "publisher": "NC State Extension Gardener Handbook", "url": "https://content.ces.ncsu.edu/extension-gardener-handbook/8-integrated-pest-management-ipm"},
+      {"title": "BOLOs - Be On the LookOut (monthly scouting lists)", "publisher": "NC State Plant Disease and Insect Clinic", "url": "https://pdic.ces.ncsu.edu/bolos/"}
+    ]
+  },
+  "Potato___Early_blight": {
+    "crop": "Potato",
+    "name": "Early blight",
+    "pathogen": "Alternaria solani",
+    "healthy": false,
+    "feedback": "Start control now: remove affected lower leaves, keep the canopy dry and begin a preventative fungicide program, rotating active ingredients.",
+    "about": "Early blight is a common fungal disease of potato that reduces both yield and tuber quality. It usually starts on older, lower leaves and progresses upward; tuber infections often appear only after months in storage.",
+    "symptoms": "Dark, concentric-ringed \"target\" spots (alternating dark and tan rings) on older leaves, which enlarge, may become angular, and merge until the leaf yellows and dies. Elongated brown-black lesions on stems and petioles. Tuber lesions are dark, sunken and circular with a raised border; the tissue underneath is dry, corky and dark.",
+    "spread": "The fungus survives between seasons in crop debris, infected seed tubers and volunteer plants, and spreads by air, windblown soil and splashing water. Alternating wet and dry periods are ideal; infection is possible from about 5-35 C with an optimum around 22-27 C and requires free moisture. Several cycles build up per season.",
+    "management": [
+      "Rotate 3-4 years away from potatoes and other solanaceous crops.",
+      "Time irrigation so foliage dries before nightfall.",
+      "Avoid nitrogen and phosphorus deficiency.",
+      "Remove volunteer potatoes and hairy nightshade.",
+      "Scout from when plants are about 30 cm tall, especially field edges next to last year's potatoes.",
+      "Kill vines 2-3 weeks before harvest and avoid harvest injuries.",
+      "Wound-heal tubers at 13-16 C and 95-99% humidity for 2-3 weeks before cool, dry storage."
+    ],
+    "treatment": [
+      "Foliar fungicides are the main control: mancozeb or chlorothalonil as protectants (multisite, FRAC M).",
+      "Under high pressure, add systemics from different groups, for example difenoconazole, fluopyram or pyrimethanil.",
+      "Rotate and tank-mix FRAC groups: recent surveys found widespread QoI (97%) and SDHI (81%) resistance in the region, so single-site products fail alone."
+    ],
+    "egypt": null,
+    "sources": [
+      {"title": "Early Blight of Potato (PP1892)", "publisher": "NDSU Agriculture, North Dakota State University Extension", "url": "https://www.ndsu.edu/agriculture/extension/publications/early-blight-potato"}
+    ]
+  },
+  "Potato___Late_blight": {
+    "crop": "Potato",
+    "name": "Late blight",
+    "pathogen": "Phytophthora infestans",
+    "healthy": false,
+    "feedback": "Act immediately. In cool, wet weather late blight can destroy a potato field within days - remove and destroy infected plants and tubers, and start a protectant fungicide program.",
+    "about": "Late blight is the disease behind the Irish potato famine of the 1840s. It attacks potato and tomato and can destroy all above-ground parts as well as tubers. Once established in a field it spreads extremely fast.",
+    "symptoms": "Purple to brown, sunken lesions on tubers that extend into the flesh, where the tissue turns brown and granular. Leaves and stems show brown to gray water-soaked lesions, often starting at leaf edges with a yellow or pale-green border. In wet weather a white fuzzy growth (sporangia) may appear on the underside of leaves.",
+    "spread": "Needs 6-12 hours of leaf wetness (dew, rain or overhead irrigation) and mild temperatures around 16-27 C. The pathogen overwinters in infected tubers (storage, cull piles, volunteers) and its spores travel on air currents; rain washes spores into the soil where they infect new tubers.",
+    "management": [
+      "Plant certified pathogen-free seed potatoes.",
+      "Plant early to escape the main disease pressure.",
+      "Avoid prolonged leaf wetness - irrigate so the canopy dries before night.",
+      "Scout weekly and immediately remove and destroy infected plants, tubers, volunteer potatoes and solanaceous weeds.",
+      "Clean tools and equipment between fields.",
+      "Store tubers dry at about 3 C.",
+      "Choose tolerant varieties where available."
+    ],
+    "treatment": [
+      "Before symptoms: protectants on a 7-10 day schedule; if disease is detected, tighten to 5-7 days and alternate active ingredients.",
+      "Systemic options named by reference sources: mefenoxam, cymoxanil, dimethomorph, cyazofamid, oxathiapiprolin - tank-mixed or alternated with mancozeb or chlorothalonil.",
+      "Organic: fixed copper formulations.",
+      "Home garden: copper or chlorothalonil products."
+    ],
+    "egypt": "In Egypt late blight develops under cool, humid conditions (about 13-21 C with high relative humidity). Egyptian recommendations stress healthy seed, removing infected material, avoiding night-time irrigation and growing resistant cultivars. A study of 152 Egyptian P. infestans isolates (ARC Giza, 2023) found clonal lineage 23_A1 dominant, so populations shift and resistance management matters.",
+    "sources": [
+      {"title": "Potato Late Blight", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/potato-late-blight"},
+      {"title": "Phytophthora spp.: Economic Plant Threats in Egypt", "publisher": "IntechOpen (Egyptian authors, NODCAR Giza)", "url": "https://www.intechopen.com/chapters/79296"},
+      {"title": "Population Dynamics of Phytophthora infestans in Egypt Reveals Clonal Dominance of 23_A1 and Displacement of 13_A2 Clonal Lineage", "publisher": "Journal of Fungi (via PubMed Central)", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10054562/"}
+    ]
+  },
+  "Potato___healthy": {
+    "crop": "Potato",
+    "name": "Healthy plant",
+    "pathogen": null,
+    "healthy": true,
+    "feedback": "No disease detected - this leaf looks healthy. Keep scouting weekly and keep the crop well managed.",
+    "about": "This class recognizes leaves with no visible disease or pest damage. Healthy plants come from routine preventive care: vegetable crops have little tolerance for damage, so it is easier to prevent problems than to treat them.",
+    "symptoms": null,
+    "spread": null,
+    "management": [
+      "Start with certified seed potatoes and healthy transplants.",
+      "Choose varieties with documented disease resistance for your region.",
+      "Scout weekly, especially leaf undersides, and act early when you find problems.",
+      "Rotate crops and remove infected plants, volunteers and weeds.",
+      "Avoid overhead watering late in the day so foliage stays dry overnight.",
+      "Keep plants well fed and watered to avoid stress.",
+      "Minimize broad-spectrum insecticide sprays so natural enemies survive."
+    ],
+    "treatment": [],
+    "egypt": null,
+    "sources": [
+      {"title": "8. Integrated Pest Management (IPM)", "publisher": "NC State Extension Gardener Handbook", "url": "https://content.ces.ncsu.edu/extension-gardener-handbook/8-integrated-pest-management-ipm"},
+      {"title": "BOLOs - Be On the LookOut (monthly scouting lists)", "publisher": "NC State Plant Disease and Insect Clinic", "url": "https://pdic.ces.ncsu.edu/bolos/"}
+    ]
+  },
+  "Tomato_Bacterial_spot": {
+    "crop": "Tomato",
+    "name": "Bacterial spot",
+    "pathogen": "Xanthomonas spp. (X. perforans prevalent on tomato in the region)",
+    "healthy": false,
+    "feedback": "Remove badly affected plants and debris, never handle plants while they are wet, and apply copper-based sprays preventatively - there is no cure once fruit is badly spotted.",
+    "about": "Bacterial spot is a serious disease of tomatoes and peppers caused by several closely related Xanthomonas bacteria with host preferences. Fruit spotting makes fruit unmarketable, and defoliation reduces yield and fruit quality.",
+    "symptoms": "Small water-soaked spots with yellow halos progressing to dark brown or black lesions under about 3 mm, often merging; leaf blighting has a greasy appearance. Fruit develops small raised blisters that darken into scab-like blemishes. Severe defoliation reduces fruit size and increases sunscald.",
+    "spread": "Seed- and transplant-borne; survives in debris and volunteer tomatoes. Rain splash, aerosols, contaminated tools and handling wet plants spread the bacteria. Favored by 24-30 C with frequent rain and high humidity; greenhouse spread via overhead irrigation is documented over several meters.",
+    "management": [
+      "Use certified pathogen-free seed and disease-free transplants - the most effective control.",
+      "Treat seed (hot water or chemical treatment; not for pelleted seed).",
+      "Sanitize tools, trays and benches.",
+      "Rotate at least one year away from tomatoes, peppers and other solanaceous crops.",
+      "Destroy volunteer plants, weeds and cull piles.",
+      "Never work among plants when they are wet."
+    ],
+    "treatment": [
+      "Copper-based products, often tank-mixed with mancozeb (for example ManKocide).",
+      "Streptomycin where registered.",
+      "Bacteriophage products (for example AgriPhage).",
+      "Plant defense activators such as acibenzolar-S-methyl (Actigard).",
+      "Organic options: Bacillus-based products (Serenade, Serifel, LifeGard). Preventative use only - they do not cure infected tissue."
+    ],
+    "egypt": "Xanthomonas vesicatoria was isolated from tomato fruit and seed lots in Egypt and is reported as the prevalent bacterial spot species in the country. Egyptian research has also shown that combining the beneficial bacterium Pseudomonas fluorescens with a plant defense activator (acibenzolar-S-methyl) helps control bacterial spot of tomato.",
+    "sources": [
+      {"title": "Bacterial Spot of Pepper and Tomato", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/bacterial-spot-of-pepper-and-tomato"},
+      {"title": "A centenary for bacterial spot of tomato and pepper", "publisher": "Molecular Plant Pathology (via PubMed Central)", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8578828/"},
+      {"title": "Bacterial wilt and spot of tomato caused by Xanthomonas vesicatoria and Ralstonia solanacearum in Egypt", "publisher": "World Journal of Microbiology and Biotechnology", "url": "https://doi.org/10.1007/s11274-007-9385-8"},
+      {"title": "Integration of Pseudomonas fluorescens and acibenzolar-S-methyl to control bacterial spot disease of tomato", "publisher": "Crop Protection", "url": "https://doi.org/10.1016/j.cropro.2008.01.011"}
+    ]
+  },
+  "Tomato_Early_blight": {
+    "crop": "Tomato",
+    "name": "Early blight",
+    "pathogen": "Alternaria linariae (formerly grouped with A. solani)",
+    "healthy": false,
+    "feedback": "Remove affected lower leaves and volunteers, keep the canopy dry and begin a preventative fungicide program - early blight defoliates plants and exposes fruit to sunscald.",
+    "about": "Early blight affects tomato leaves, stems and fruit at any growth stage, from seedlings to mature plants. Defoliation exposes fruit to sunscald and can seriously reduce yield; the same disease shape appears on potato.",
+    "symptoms": "Small brownish-black spots on the lower leaves that expand to about 6-12 mm with characteristic concentric rings; the surrounding leaf yellows and dies. Fruit (often at the stem attachment) shows sunken, leathery, dark brown lesions with concentric rings.",
+    "spread": "Favored by warm temperatures above about 27 C and moderate to heavy rainfall. The fungus survives between seasons in crop debris in the soil, and volunteer tomato plants are a primary source of new infections; spores spread by wind and water splash.",
+    "management": [
+      "Keep plants vigorous with adequate fertilization.",
+      "Remove volunteer tomato plants and solanaceous weeds.",
+      "Rotate at least 2-3 years away from tomato.",
+      "Trellis and mulch plants, and prune lower leaves to reduce soil splash.",
+      "Choose tolerant varieties where possible.",
+      "Remove and destroy crop debris after harvest."
+    ],
+    "treatment": [
+      "Preventative fungicides on 7-14 day intervals; azoxystrobin + chlorothalonil, chlorothalonil, fluopyram + trifloxystrobin, pyrimethanil and penthiopyrad are named by reference sources.",
+      "Strobilurin (QoI) resistance has been reported - rotate FRAC groups.",
+      "Organic: Bacillus amyloliquefaciens D747, Bacillus subtilis QST 713, Reynoutria sachalinensis extract, fixed copper, Streptomyces lydicus."
+    ],
+    "egypt": "Egyptian research at Assiut University has shown that plant extracts and Trichoderma-based biocontrol reduce early blight in tomato under Egyptian greenhouse and field conditions, giving local growers non-chemical options alongside fungicides.",
+    "sources": [
+      {"title": "Early Blight of Tomato", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/early-blight-of-tomato"},
+      {"title": "Evaluation of various plant extracts against the early blight disease of tomato plants under greenhouse and field conditions", "publisher": "Plant Protection Science (Assiut University authors)", "url": "https://pps.agriculturejournals.cz/artkey/pps-201202-0003_evaluation-of-various-plant-extracts-against-the-early-blight-disease-of-tomato-plants-under-greenhouse-and-fie.php"},
+      {"title": "Use of Trichoderma culture filtrates as a sustainable approach to mitigate early blight disease of tomato and their influence on plant biomarkers and antioxidants production", "publisher": "Frontiers in Plant Science (Assiut University co-authors)", "url": "https://www.frontiersin.org/journals/plant-science/articles/10.3389/fpls.2023.1192818/full"}
+    ]
+  },
+  "Tomato_Late_blight": {
+    "crop": "Tomato",
+    "name": "Late blight",
+    "pathogen": "Phytophthora infestans",
+    "healthy": false,
+    "feedback": "Act immediately - late blight can destroy a tomato crop within days in cool, wet weather. Remove infected plants and fruit and start a protectant fungicide program.",
+    "about": "Late blight, caused by Phytophthora infestans (the potato famine pathogen), can attack all above-ground parts of the tomato. Weather that favors it - cool, rainy or foggy days - can wipe out a planting in a few days.",
+    "symptoms": "Irregular water-soaked lesions on leaves, often on younger leaves in the top canopy with a lighter halo; leaves brown, shrivel and die. White cottony growth appears on leaf undersides in humid weather. Fruit shows firm, greasy spots that turn leathery and chocolate brown.",
+    "spread": "Favored by nights around 10-21 C and days up to about 27 C with rain, fog or heavy dew; lesions appear 3-5 days after infection. Spores spread by wind (kilometers), rain and irrigation, and can travel on tools and equipment.",
+    "management": [
+      "Plant early to escape the main weather window.",
+      "Scout daily in cool, wet weather and remove infected plants and fruit immediately.",
+      "Remove volunteer tomato plants and solanaceous weeds.",
+      "Avoid overhead irrigation and work in fields only when foliage is dry.",
+      "Grow resistant varieties where available.",
+      "Clean equipment between fields."
+    ],
+    "treatment": [
+      "Protectant programs on 7-10 day intervals before symptoms; tighten to 5-7 days once disease is present.",
+      "Named actives: chlorothalonil, mefenoxam + chlorothalonil, cymoxanil, mandipropamid + difenoconazole, fluopicolide - alternate and tank-mix.",
+      "Organic: fixed copper."
+    ],
+    "egypt": "The same pathogen moves between potato and tomato in Egypt - an ARC Giza study of 152 Egyptian P. infestans isolates included 69 from tomato - so potato and tomato crops should be scouted together, especially in the cool, humid season.",
+    "sources": [
+      {"title": "Tomato Late Blight", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/tomato-late-blight"},
+      {"title": "Population Dynamics of Phytophthora infestans in Egypt Reveals Clonal Dominance of 23_A1 and Displacement of 13_A2 Clonal Lineage", "publisher": "Journal of Fungi (via PubMed Central)", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10054562/"}
+    ]
+  },
+  "Tomato_Leaf_Mold": {
+    "crop": "Tomato",
+    "name": "Leaf mold",
+    "pathogen": "Passalora fulva (syn. Fulvia fulva, formerly Cladosporium fulvum)",
+    "healthy": false,
+    "feedback": "Improve ventilation right away, remove affected lower leaves and start a preventative fungicide program - leaf mold thrives in humid, poorly ventilated greenhouses.",
+    "about": "Leaf mold is one of the most damaging foliar diseases of greenhouse and high-tunnel tomatoes. It spreads fast in humid, poorly ventilated air and can defoliate plants completely.",
+    "symptoms": "Pale green to yellow spots on older leaves, first visible on the upper side, with olive-green to brown velvety mold on the underside. Lesions merge, leaves curl, wither and drop. Fruit (rarely) shows black, leathery stem-end rot.",
+    "spread": "Needs leaf wetness or relative humidity above 85%; develops from about 4-34 C with an optimum around 22-24 C. The fungus survives at least one year in crop residue and soil; spores travel with air currents, splashing water, tools and clothing.",
+    "management": [
+      "Improve ventilation: widen plant spacing, raise tunnel sides, run fans.",
+      "Remove lower leaves and destroy crop residue after harvest.",
+      "Sanitize tools and hands between plants.",
+      "Avoid overhead irrigation.",
+      "Rotate away from tomato and scout weekly.",
+      "Grow resistant varieties where available (for example Trust, Geronimo, Starbuck)."
+    ],
+    "treatment": [
+      "Preventative fungicides: difenoconazole + azoxystrobin (Quadris Top), difenoconazole + benzovindiflupyr (Aprovia Top), cyprodinil + difenoconazole (Inspire Super), mandipropamid + difenoconazole (Revus Top), cymoxanil + famoxadone (Tanos), mancozeb and mancozeb + copper products.",
+      "Rotate modes of action to avoid resistance."
+    ],
+    "egypt": "There is no Egypt-specific leaf mold bulletin, but the pathogen is studied by Egyptian researchers (Agricultural Research Center, Giza co-authored its genome study), and Egyptian greenhouse tomato growers face it under humid, poorly ventilated conditions - ventilation is the first line of defense.",
+    "sources": [
+      {"title": "Foliar Fungal Diseases on High Tunnel and Greenhouse Tomatoes", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/foliar-fungal-diseases-on-high-tunnel-and-greenhouse-tomatoes"},
+      {"title": "The Genomes of the Fungal Plant Pathogens Cladosporium fulvum and Dothistroma septosporum Reveal Adaptation to Different Hosts and Lifestyles But Also Signatures of Common Ancestry", "publisher": "PLOS Genetics (ARC Giza co-author)", "url": "https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1003088"}
+    ]
+  },
+  "Tomato_Septoria_leaf_spot": {
+    "crop": "Tomato",
+    "name": "Septoria leaf spot",
+    "pathogen": "Septoria lycopersici",
+    "healthy": false,
+    "feedback": "Remove infected leaves and debris, keep foliage dry and start a preventative fungicide program - Septoria spreads with splashing water and can defoliate plants from the bottom up.",
+    "about": "Septoria leaf spot is especially destructive in seasons with moderate temperatures and abundant rainfall. It starts on the lower leaves and can progress until plants are completely defoliated, dramatically reducing yield.",
+    "symptoms": "Small circular tan-to-gray spots, usually under 3 mm, on lower leaves and stems, with a dark border and sometimes a yellow halo. Tiny dark dots (pycnidia) appear in the center of older spots. Lesions merge and the leaf dies; fruit is rarely infected.",
+    "spread": "Spores need water and spread mainly by rain splash, and also on workers, tools and insects moving through wet foliage. The fungus overwinters in infected plant debris and on solanaceous weeds such as horsenettle. High humidity and warm temperatures favor it.",
+    "management": [
+      "Rotate at least 2 years away from tomato.",
+      "Control horsenettle and other solanaceous weeds.",
+      "Remove and destroy crop debris after harvest.",
+      "Stake plants for airflow and mulch to reduce soil splash.",
+      "Never work among plants when the foliage is wet.",
+      "Remove infected leaves and plants early."
+    ],
+    "treatment": [
+      "Preventative fungicides: chlorothalonil, fixed copper, mancozeb, azoxystrobin and penthiopyrad are named by reference sources.",
+      "Organic: copper formulations or potassium bicarbonate.",
+      "All are preventative; they cannot cure infected tissue."
+    ],
+    "egypt": null,
+    "sources": [
+      {"title": "Septoria Leaf Spot of Tomato", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/septoria-leaf-spot-of-tomato"}
+    ]
+  },
+  "Tomato_Spider_mites_Two_spotted_spider_mite": {
+    "crop": "Tomato",
+    "name": "Two-spotted spider mite",
+    "pathogen": "Tetranychus urticae (pest, not a disease)",
+    "healthy": false,
+    "feedback": "Spray the undersides of the leaves thoroughly, rotate miticides to avoid resistance, and consider releasing predatory mites - spider mites multiply fast in hot, dry weather.",
+    "about": "The two-spotted spider mite is a major pest of tomato and many other crops. It feeds on leaf cells and, in dense populations, spins webbing over the foliage and causes premature plant decline.",
+    "symptoms": "Fine stippling and loss of color on leaves that can develop into bronzing and premature leaf drop. Heavy infestations show webbing on the foliage. Fruit can develop gold-fleck blemishing. Adult females are tiny (under 0.5 mm), greenish-yellow with two dark spots, usually on leaf undersides.",
+    "spread": "Hot, dry conditions favor rapid build-up, with many overlapping generations per year. Mites overwinter in crop debris and colonize new plants in spring. Broad-spectrum insecticide sprays, especially pyrethroids, can flare populations by killing natural enemies, and repeated acaricide use selects for resistance.",
+    "management": [
+      "Scout weekly: inspect the undersides of leaves in the upper canopy (5-10 sites, 10 plants each); the economic threshold on tomato is around 2 mites per leaflet.",
+      "Release the predatory mite Phytoseiulus persimilis early, while the pest is still below about 0.5 mites per leaflet, in the evening and not before rain.",
+      "Avoid pyrethroid and other broad-spectrum sprays that kill natural enemies.",
+      "Rotate acaricide modes of action and avoid repeating one product.",
+      "Direct sprays at leaf undersides with thorough coverage.",
+      "Reduce plant stress - dust and water stress favor mites."
+    ],
+    "treatment": [
+      "Excellent-rated actives: abamectin, acequinocyl, bifenazate; good-rated: fenazaquin, fenpyroximate, spiromesifen, cyflumetofen.",
+      "Organic: insecticidal soaps, horticultural oils, neem and sulfur-based products.",
+      "Note: pyrethroids are poor against mites and can make the problem worse."
+    ],
+    "egypt": "Spider mites and acaricide resistance are serious problems in Egypt. Egyptian research (Cairo University and National Research Centre, Giza) showed that inducing plant resistance with potassium humates cut mite populations by about 55% and salicylic acid by about 51% - tools that reduce reliance on acaricides.",
+    "sources": [
+      {"title": "Insect Management on Fruiting Vegetables in North Carolina", "publisher": "NC State Extension Entomology", "url": "https://entomology.ces.ncsu.edu/insect-management-on-fruiting-vegetables-in-north-carolina/"},
+      {"title": "Biological Control of Spider Mites in Tomatoes", "publisher": "NC State Extension Entomology", "url": "https://entomology.ces.ncsu.edu/biological-control-of-spider-mites-in-tomatoes/"},
+      {"title": "Tomato - Spider Mites", "publisher": "University of Connecticut Integrated Pest Management", "url": "https://ipm.cahnr.uconn.edu/tomato-spider-mites/"},
+      {"title": "Enhancement of Resistance in Tomato Plants Using Different Compounds against the Two-spotted Spider Mites Tetranychus urticae Koch", "publisher": "Journal of Entomology (Cairo University / NRC Giza authors)", "url": "https://scialert.net/fulltext/?doi=rjes.2015.119.136"}
+    ]
+  },
+  "Tomato__Target_Spot": {
+    "crop": "Tomato",
+    "name": "Target spot",
+    "pathogen": "Corynespora cassiicola",
+    "healthy": false,
+    "feedback": "Begin a protective fungicide program and improve canopy airflow - there are no resistant varieties, so prevention is the main control for target spot.",
+    "about": "Target spot is a warm, humid-weather disease of tomato first reported in Florida in 1972. The fungus has more than 500 reported hosts and can cause serious defoliation and fruit blemishing in tropical and subtropical production.",
+    "symptoms": "Pinpoint dark brown leaf lesions that expand into spots with light brown or gray centers and dark concentric rings, easily confused with early blight. Lesions merge and defoliate the plant; brown oval lesions appear on petioles and stems. Fruit shows brown sunken flecks, then pitting and cracking in star patterns, and can rot after harvest.",
+    "spread": "Spores spread by wind and rain; continuous leaf wetness for 16-44 hours is the critical factor for infection, with an optimum around 28-32 C. First infections appear on mature leaves inside the canopy, and the fungus can survive up to 2 years in crop debris.",
+    "management": [
+      "No resistant varieties exist - protective fungicide programs are the primary control.",
+      "Set out clean transplants.",
+      "Rotate away from tomato and known hosts such as soybean.",
+      "Control weeds.",
+      "Prune and stake to improve canopy airflow and shorten leaf wetness.",
+      "Remove and destroy crop debris after harvest."
+    ],
+    "treatment": [
+      "Named actives in reference programs: chlorothalonil, mancozeb, difenoconazole, cyprodinil, fludioxonil, fluopyram, flutriafol, fluxapyroxad, benzovindiflupyr, pyrimethanil.",
+      "QoI (strobilurin) efficacy has declined and QoI/SDHI performance varies - rotate and tank-mix groups."
+    ],
+    "egypt": "No Egypt-specific source was verified, but the disease occurs in warm, humid subtropical production like Egypt's, so summer tomato plantings with dense canopies are at risk.",
+    "sources": [
+      {"title": "Target Spot of Tomato in Florida (PP351)", "publisher": "UF/IFAS Extension EDIS", "url": "https://edis.ifas.ufl.edu/publication/PP351"},
+      {"title": "Host-Specific Toxin Production by the Tomato Target Leaf Spot Pathogen Corynespora cassiicola", "publisher": "Turkish Journal of Agriculture and Forestry (TUBITAK)", "url": "https://journals.tubitak.gov.tr/agriculture/vol28/iss6/2"}
+    ]
+  },
+  "Tomato__Tomato_YellowLeaf__Curl_Virus": {
+    "crop": "Tomato",
+    "name": "Tomato yellow leaf curl virus (TYLCV)",
+    "pathogen": "Tomato yellow leaf curl virus, genus Begomovirus (whitefly-transmitted)",
+    "healthy": false,
+    "feedback": "There is no cure for an infected plant. Remove and destroy it immediately, and act against the whitefly vector to protect the rest of the crop.",
+    "about": "Tomato yellow leaf curl virus is a whitefly-transmitted geminivirus and one of the most damaging tomato viruses worldwide. Infected plants are stunted and produce little or no marketable fruit, and once the virus is in a field it is very difficult to control.",
+    "symptoms": "Chlorosis between veins and at the leaf margins of young leaves, which curl upward or downward and look crumpled. Plants become stunted and bushy with shortened internodes; flowers drop and fruit set collapses. Symptoms can take up to three weeks to appear after infection.",
+    "spread": "Transmitted by adult whiteflies (Bemisia tabaci) that acquire the virus from infected tomato, other solanaceous crops and weeds, then move to healthy plants - it is not spread by seed or tools. Warm weather and whitefly build-up drive epidemics.",
+    "management": [
+      "Plant TYLCV-resistant or tolerant varieties - the foundation of control.",
+      "Control the whitefly vector: treating transplants with imidacloprid in the tray several days before field setting is recommended.",
+      "Monitor whiteflies with yellow sticky traps and scouting, and act before populations build.",
+      "Remove and destroy infected plants as soon as they appear.",
+      "Manage weed hosts around fields (in Egypt, Datura stramonium and Malva parviflora are confirmed virus reservoirs).",
+      "Avoid planting near other infected tomatoes or solanaceous and ornamental hosts."
+    ],
+    "treatment": [
+      "No product cures the virus - all treatments target the whitefly vector.",
+      "Highly rated whitefly actives include imidacloprid, flupyradifurone and pyriproxyfen; also rated: thiamethoxam, acetamiprid, dinotefuran, afidopyropen, cyantraniliprole, spiromesifen, spirotetramat.",
+      "Home garden options: neem, pyrethrins, insecticidal soaps.",
+      "Mind pre-harvest intervals and local registrations."
+    ],
+    "egypt": "TYLCV is a major constraint for Egyptian tomato production. A field study by Cairo University and Agricultural Research Center researchers found whiteflies colonizing from early March and peaking in late May, with TYLCV incidence reaching 100% by mid-season; Datura stramonium and Malva parviflora were confirmed local virus reservoirs, and biotype Q of Bemisia tabaci dominated.",
+    "sources": [
+      {"title": "Tomato Yellow Leaf Curl Virus", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/tomato-yellow-leaf-curl-virus"},
+      {"title": "Insect Management on Fruiting Vegetables in North Carolina", "publisher": "NC State Extension Entomology", "url": "https://entomology.ces.ncsu.edu/insect-management-on-fruiting-vegetables-in-north-carolina/"},
+      {"title": "Bemisia tabaci Abundance and its Relationship to TYLCV Incidence in Tomato Fields in Egypt", "publisher": "Indian Journal of Entomology (Cairo University / ARC authors)", "url": "https://indianentomology.org/index.php/ije/article/view/3491"}
+    ]
+  },
+  "Tomato__Tomato_mosaic_virus": {
+    "crop": "Tomato",
+    "name": "Tomato mosaic virus (ToMV)",
+    "pathogen": "Tomato mosaic virus, a tobamovirus",
+    "healthy": false,
+    "feedback": "There is no chemical cure. Remove and destroy infected plants and disinfect hands and tools between plants - ToMV spreads by contact, not by insects.",
+    "about": "Tomato mosaic virus is a very stable tobamovirus that spreads by contact - hands, tools, transplants and seed - rather than by insects. It persists in debris and can significantly reduce yield and fruit quality.",
+    "symptoms": "Light and dark green mottling (mosaic) on leaves, with stunting and yellow streaks or spots; leaves may be malformed and distorted. Fruit ripens unevenly and can show internal browning or ringspots.",
+    "spread": "Spreads mechanically through microscopic wounds: on hands, tools, grafting knives, seeds and transplants. It is not typically insect-transmitted. ToMV survives up to 2 years in dry leaf debris (about a month in moist soil), is favored around 24 C, and has over 200 host species.",
+    "management": [
+      "Disinfect tools and hands frequently (milk solutions reduce spread for home growers).",
+      "Remove and destroy infected plants and crop debris - do not compost them.",
+      "Rotate away from tomato and other solanaceous crops.",
+      "Grow resistant varieties carrying Tm-1, Tm-2 or Tm-2^2 genes.",
+      "Treat seed with 10% trisodium phosphate for 15 minutes and/or dry heat at 70 C for 2-4 days.",
+      "Control weeds and volunteers that can harbor the virus.",
+      "Do not smoke or handle tobacco around plants - related tobamoviruses can be introduced from tobacco products."
+    ],
+    "treatment": [
+      "No chemical treatment is effective against the virus itself - sanitation and resistant varieties are the only controls."
+    ],
+    "egypt": "An Egyptian ToMV isolate (ToMV-EG) was characterized by Al-Azhar University researchers with Agricultural Research Center co-authors, confirming ToMV among the economically damaging tobamoviruses in Egypt; seed treatment and strict hygiene are the practical controls.",
+    "sources": [
+      {"title": "Tobamoviruses that affect tomato (TMV, ToMV, ToBRFV)", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/tobamoviruses-that-affect-tomato-tmv-tomv-tobrfv"},
+      {"title": "Ameliorating the Adverse Effects of Tomato mosaic tobamovirus Infecting Tomato Plants in Egypt by Boosting Immunity in Tomato Plants Using Zinc Oxide Nanoparticles", "publisher": "Molecules (via PubMed Central; Al-Azhar University / ARC authors)", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7958966"}
+    ]
+  },
+  "Tomato_healthy": {
+    "crop": "Tomato",
+    "name": "Healthy plant",
+    "pathogen": null,
+    "healthy": true,
+    "feedback": "No disease detected - this leaf looks healthy. Keep scouting weekly and keep the crop well managed.",
+    "about": "This class recognizes leaves with no visible disease or pest damage. Healthy plants come from routine preventive care: vegetable crops have little tolerance for damage, so it is easier to prevent problems than to treat them.",
+    "symptoms": null,
+    "spread": null,
+    "management": [
+      "Start with certified seed and healthy transplants.",
+      "Choose varieties with documented disease resistance for your region.",
+      "Scout weekly - check leaf undersides and watch for the common threats to tomato.",
+      "Rotate crops and remove infected plants, volunteers and weeds.",
+      "Stake or trellis and mulch so foliage stays dry and off the soil.",
+      "Water at the base in the morning and avoid overhead irrigation.",
+      "Minimize broad-spectrum sprays so natural enemies survive."
+    ],
+    "treatment": [],
+    "egypt": "An Egypt-hosted integrated pest management guide for open-field tomato recommends resistant varieties, biological control, pheromone monitoring and judicious chemical use to keep the crop productive.",
+    "sources": [
+      {"title": "Fresh Market Tomato Production in Eastern North Carolina", "publisher": "NC State Extension Publications", "url": "https://content.ces.ncsu.edu/fresh-market-tomato-production-piedmont-and-coastal-plain-of-north-carolina"},
+      {"title": "8. Integrated Pest Management (IPM)", "publisher": "NC State Extension Gardener Handbook", "url": "https://content.ces.ncsu.edu/extension-gardener-handbook/8-integrated-pest-management-ipm"},
+      {"title": "BOLOs - Be On the LookOut (monthly scouting lists)", "publisher": "NC State Plant Disease and Insect Clinic", "url": "https://pdic.ces.ncsu.edu/bolos/"},
+      {"title": "منشور الأساليب المتكاملة لمكافحة آفات الطماطم في الحقول المكشوفة (Integrated methods for controlling tomato pests in open fields, Arabic)", "publisher": "SEIP Egypt", "url": "https://www.seip-eg.com/?p=1777"}
+    ]
+  }
+}
