@@ -63,7 +63,17 @@ cargo build --release
 ./target/release/greenlens leaf.jpg   # or open one right away
 ```
 
-Build prerequisites for the window (glow/OpenGL back end, X11 and Wayland):
+The binary expects the virtualenv at `.venv/bin/python` (`Scripts\python.exe`
+on Windows) and the `ml/` and `artifacts/` directories in the working
+directory (the checkout doubles as the install location). `GREENLENS_HOME`
+points it at a different directory and `GREENLENS_PYTHON` overrides the
+interpreter. The "Open image" button uses the native file dialog; the command
+line argument works everywhere. For Nix users, the included flake wraps all of
+the above in dev shells (`nix develop .`); it is not needed on other systems.
+
+### Linux
+
+Build prerequisites:
 
 - a recent stable Rust toolchain
 - Debian/Ubuntu: `libxkbcommon-dev libwayland-dev libx11-dev libxcursor-dev libxi-dev libxrandr-dev libgl1-mesa-dev`
@@ -84,14 +94,20 @@ GPU inference additionally needs a recent NVIDIA driver, otherwise TensorFlow
 falls back to the CPU by itself. On macOS install plain `tensorflow` without
 the extra.
 
-The binary expects the virtualenv at `.venv/bin/python` and the `ml/` and
-`artifacts/` directories in the working directory (the checkout doubles as the
-install location). `GREENLENS_HOME` points it at a different directory and
-`GREENLENS_PYTHON` overrides the interpreter. The "Open image" button uses the
-desktop file dialog; the command line argument works everywhere.
+### Windows
 
-For Nix users, the included flake wraps all of the above in dev shells
-(`nix develop .`); it is not needed on other systems.
+A recent stable Rust toolchain is all that is needed to build (the usual
+MSVC setup from rustup); the worker uses the Windows virtualenv layout:
+
+```powershell
+cargo build --release
+py -3.12 -m venv .venv
+.venv\Scripts\pip install -r ml\requirements.txt
+.\target\release\greenlens.exe leaf.jpg
+```
+
+Note that pip's TensorFlow runs on the CPU on Windows; for GPU inference use
+WSL2, where the Linux steps apply unchanged.
 
 ## Reproducing the model
 
