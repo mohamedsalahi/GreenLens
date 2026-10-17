@@ -18,6 +18,9 @@ worker, and displays the ranked class predictions with their probabilities.
   reported in the window instead of taking the app down.
 - Results are shown as a confidence gauge plus ranked candidates, together
   with the inference time and the live worker state (loading, ready, failed).
+- Every prediction carries disease guidance looked up in a committed SQLite
+  database: what the disease is, how to recognize and fight it, notes for
+  Egypt, and the sources the advice comes from.
 - An image can be picked with the "Open image" button or handed to the app
   directly on the command line: `greenlens path/to/leaf.jpg`.
 
@@ -57,6 +60,38 @@ The trained model is committed so the app runs without retraining:
 - `metadata.json` - training configuration, dataset split sizes, environment
 - `test_report.json`, `confusion_matrix.png` - evaluation on the held-out split
 - `train_log_phase1.csv`, `train_log_phase2.csv` - per-epoch history
+- `diseases.db` - disease guidance and cited sources, keyed by class id
+
+## Disease guidance
+
+After every analysis the app shows a guidance panel for the top prediction:
+what the disease is, its symptoms and how it spreads, how to combat it
+(cultural steps first, then treatment options), notes for Egyptian growers,
+and the sources the advice was taken from, as clickable links. The other
+candidates in the list are clickable too, so their guidance can be inspected
+as well.
+
+![Disease guidance](assets/screenshot_guidance.png)
+
+The guidance lives in a SQLite database, `artifacts/diseases.db`, keyed by the
+same class ids the model predicts (the worker attaches the matching row to
+each prediction). It is rebuilt from `ml/disease_info.json` with:
+
+```sh
+.venv/bin/python ml/build_diseases_db.py
+```
+
+Sources are limited to credible institutions: NC State Extension and its Plant
+Disease and Insect Clinic, other US university extension services (NDSU,
+UF/IFAS, UConn), and Egyptian research: the Agricultural Research Center
+(Giza), Assiut University, Al-Azhar University, Cairo University and Egyptian
+journals. Active ingredients are examples taken from those sources and must be
+applied according to the locally registered product label - some products used
+abroad are not registered in Egypt, and vice versa.
+
+The schema is three tables: `diseases` (one row per class), `steps` (ordered
+management and treatment instructions) and `sources` (ordered citations per
+disease).
 
 ## Building and running
 
@@ -171,7 +206,7 @@ and the worker protocol.
 - `src/` - the desktop app (`app.rs`), the worker subprocess bridge
   (`worker.rs`) and the entry point (`main.rs`)
 - `ml/` - dataset preparation, shared preprocessing, training, the inference
-  worker and its tests
-- `artifacts/` - trained model and evaluation reports
+  worker, the disease-guidance database builder and their tests
+- `artifacts/` - trained model, evaluation reports and the guidance database
 - `data/` - raw and processed datasets (not committed)
-- `assets/` - bundled fonts and the README screenshot
+- `assets/` - bundled fonts and the README screenshots
