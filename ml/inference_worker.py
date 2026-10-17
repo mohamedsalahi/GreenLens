@@ -187,6 +187,9 @@ def serve(engine: Engine) -> int:
                     _respond(_error(request_id, "bad_request", "predict needs a path"))
                     continue
                 top_k = request.get("top_k", 3)
+                if not isinstance(top_k, int) or isinstance(top_k, bool):
+                    _respond(_error(request_id, "bad_request", "top_k must be an integer"))
+                    continue
                 response = engine.predict(path, top_k)
             elif kind == "shutdown":
                 _respond({"id": request_id, "type": "bye"})
