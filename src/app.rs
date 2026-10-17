@@ -887,7 +887,14 @@ fn start_worker() -> std::io::Result<Worker> {
     let root = project_root();
     let python = std::env::var("GREENLENS_PYTHON")
         .map(PathBuf::from)
-        .unwrap_or_else(|_| root.join(".venv/bin/python"));
+        .unwrap_or_else(|_| {
+            let unix = root.join(".venv/bin/python");
+            if unix.is_file() {
+                unix
+            } else {
+                root.join(".venv/Scripts/python.exe")
+            }
+        });
     let script = root.join("ml/inference_worker.py");
     let model = root.join("artifacts/model.keras");
     let model = model.is_file().then_some(model);
