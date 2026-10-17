@@ -1,6 +1,7 @@
 import json
 import shutil
 import subprocess
+import threading
 from pathlib import Path
 
 import pytest
@@ -10,6 +11,18 @@ PYTHON = REPO / ".venv/bin/python"
 SCRIPT = REPO / "ml/inference_worker.py"
 MODEL = REPO / "artifacts/model.keras"
 DATASET = REPO / "data/raw/plantvillage"
+
+
+def read_line(proc: subprocess.Popen, timeout: float = 60.0) -> str:
+    """Read one line from the worker, failing instead of blocking forever."""
+    result: list[str] = []
+    reader = threading.Thread(target=lambda: result.append(proc.stdout.readline()), daemon=True)
+    reader.start()
+    reader.join(timeout)
+    if reader.is_alive():
+        proc.kill()
+        pytest.fail(f"worker produced no answer within {timeout:.0f}s")
+    return result[0] if result else ""
 
 
 def first_dataset_image() -> Path | None:
@@ -28,7 +41,7 @@ def worker():
         text=True,
         bufsize=1,
     )
-    line = proc.stdout.readline()
+    line = read_line(proc)
     if not line:
         proc.kill()
         pytest.fail("worker produced no startup line")
@@ -51,7 +64,7 @@ def worker():
 def request(proc: subprocess.Popen, payload: dict) -> dict:
     proc.stdin.write(json.dumps(payload) + "\n")
     proc.stdin.flush()
-    line = proc.stdout.readline()
+    line = read_line(proc)
     assert line, "worker closed its output"
     return json.loads(line)
 
@@ -111,7 +124,7 @@ def test_malformed_request_gets_an_error(worker):
     proc, _ = worker
     proc.stdin.write("this is not json\n")
     proc.stdin.flush()
-    response = json.loads(proc.stdout.readline())
+    response = json.loads(read_line(proc))
     assert response["type"] == "error"
     assert response["code"] == "bad_request"
 
